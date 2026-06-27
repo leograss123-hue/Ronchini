@@ -14,11 +14,11 @@ export default function Hero() {
       <p className="subtitle heroSubtitle">
         Toda geração tem os clássicos que canta.
         <br />
-        Essa é a nossa.
+        Essa é a nossa!
       </p>
 
       <p className="tagline heroTagline">
-        Onde o sertanejo vira coro.
+        Porque modão bom ninguém canta sozinho.
       </p>
     </>
   );
