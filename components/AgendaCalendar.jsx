@@ -121,15 +121,23 @@ export default function AgendaCalendar() {
   const secaoDadosRef = useRef(null);
   const telaSucessoRef = useRef(null);
 
-  function scrollPara(ref) {
-    if (ref.current) {
-      setTimeout(() => {
-        ref.current.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }, 200);
-    }
+  // 🎯 Scroll que respeita a posição do usuário:
+  // - Só rola se a seção NÃO estiver visível na tela
+  // - Não deixa o scroll passar dos depoimentos (não rola pra além)
+  function scrollSuave(ref) {
+    if (!ref.current) return;
+
+    setTimeout(() => {
+      const el = ref.current;
+      const rect = el.getBoundingClientRect();
+      const topOffset = 100; // respiro do topo
+      const jaVisivel = rect.top >= topOffset && rect.top <= window.innerHeight * 0.6;
+
+      if (jaVisivel) return; // já tá visível, não rola
+
+      const scrollY = window.scrollY + rect.top - topOffset;
+      window.scrollTo({ top: scrollY, behavior: "smooth" });
+    }, 200);
   }
 
   useEffect(() => {
@@ -163,23 +171,23 @@ export default function AgendaCalendar() {
   }, []);
 
   useEffect(() => {
-    if (dataSelecionada && !enviado) scrollPara(secaoEventoRef);
+    if (dataSelecionada && !enviado) scrollSuave(secaoEventoRef);
   }, [dataSelecionada]);
 
   useEffect(() => {
-    if (tipoEvento && !enviado) scrollPara(secaoPacoteRef);
+    if (tipoEvento && !enviado) scrollSuave(secaoPacoteRef);
   }, [tipoEvento]);
 
   useEffect(() => {
-    if ((pacote || formacao) && !enviado) scrollPara(secaoHorarioRef);
+    if ((pacote || formacao) && !enviado) scrollSuave(secaoHorarioRef);
   }, [pacote, formacao]);
 
   useEffect(() => {
-    if (horario && !enviado) scrollPara(secaoDadosRef);
+    if (horario && !enviado) scrollSuave(secaoDadosRef);
   }, [horario]);
 
   useEffect(() => {
-    if (enviado) scrollPara(telaSucessoRef);
+    if (enviado) scrollSuave(telaSucessoRef);
   }, [enviado]);
 
   function mesAnterior() {
@@ -381,7 +389,7 @@ export default function AgendaCalendar() {
   }
 
   // ============================================
-  // 🎉 TELA DE SUCESSO
+  // 🎉 TELA DE SUCESSO (com depoimentos no final)
   // ============================================
   if (enviado && dadosEnviados) {
     const tipo = TIPOS_EVENTO.find((t) => t.id === dadosEnviados.tipoEvento);
@@ -389,190 +397,195 @@ export default function AgendaCalendar() {
     const form = FORMACOES.find((f) => f.id === dadosEnviados.formacao);
 
     return (
-      <div
-        ref={telaSucessoRef}
-        style={{
-          maxWidth: "700px",
-          margin: "0 auto",
-          width: "100%",
-          padding: "40px 28px",
-          background:
-            "linear-gradient(145deg, rgba(20,15,5,0.75), rgba(0,0,0,0.7))",
-          borderRadius: "22px",
-          backdropFilter: "blur(16px)",
-          border: `1px solid ${COR.bordaDourada}`,
-          boxShadow:
-            "0 15px 50px rgba(0,0,0,0.4), 0 0 80px rgba(245,215,110,0.15), inset 0 1px 0 rgba(245,215,110,0.15)",
-          textAlign: "center",
-          animation: "sucessoEntrada 0.7s cubic-bezier(0.4, 0, 0.2, 1)",
-        }}
-      >
+      <div ref={telaSucessoRef} style={{ width: "100%" }}>
         <div
           style={{
-            width: "90px",
-            height: "90px",
-            margin: "0 auto 28px",
-            borderRadius: "50%",
-            background: `linear-gradient(135deg, ${COR.douradoClaro}, ${COR.dourado})`,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "48px",
-            color: "#111",
-            fontWeight: "900",
-            boxShadow:
-              "0 0 40px rgba(245,215,110,0.5), 0 0 80px rgba(245,215,110,0.25)",
-            animation: "checkPulse 2s ease infinite",
-          }}
-        >
-          ✓
-        </div>
-
-        <h2
-          style={{
-            fontFamily: "var(--font-cinzel), serif",
-            fontSize: "clamp(22px, 3.5vw, 32px)",
-            letterSpacing: "3px",
-            color: COR.textoDourado,
-            marginBottom: "14px",
-            textTransform: "uppercase",
-            textShadow: "0 0 25px rgba(245,215,110,0.4)",
-          }}
-        >
-          Solicitação Enviada!
-        </h2>
-
-        <p
-          style={{
-            fontSize: "14px",
-            lineHeight: "1.7",
-            opacity: 0.85,
-            marginBottom: "30px",
-            letterSpacing: "0.4px",
-          }}
-        >
-          Sua solicitação foi aberta no WhatsApp. Se a janela não abriu
-          automaticamente, clique no botão abaixo.
-        </p>
-
-        <div
-          style={{
-            height: "1px",
+            maxWidth: "700px",
+            margin: "0 auto",
+            padding: "40px 28px",
             background:
-              "linear-gradient(90deg, transparent, rgba(245,215,110,0.5), transparent)",
-            marginBottom: "26px",
-          }}
-        />
-
-        <div
-          style={{
-            background: "rgba(0,0,0,0.35)",
-            borderRadius: "16px",
-            padding: "22px",
-            border: `1px solid ${COR.bordaDouradaSutil}`,
-            marginBottom: "28px",
-            textAlign: "left",
+              "linear-gradient(145deg, rgba(20,15,5,0.75), rgba(0,0,0,0.7))",
+            borderRadius: "22px",
+            backdropFilter: "blur(16px)",
+            border: `1px solid ${COR.bordaDourada}`,
+            boxShadow:
+              "0 15px 50px rgba(0,0,0,0.4), 0 0 80px rgba(245,215,110,0.15), inset 0 1px 0 rgba(245,215,110,0.15)",
+            textAlign: "center",
+            animation: "sucessoEntrada 0.7s cubic-bezier(0.4, 0, 0.2, 1)",
           }}
         >
-          <h3
+          <div
+            style={{
+              width: "90px",
+              height: "90px",
+              margin: "0 auto 28px",
+              borderRadius: "50%",
+              background: `linear-gradient(135deg, ${COR.douradoClaro}, ${COR.dourado})`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "48px",
+              color: "#111",
+              fontWeight: "900",
+              boxShadow:
+                "0 0 40px rgba(245,215,110,0.5), 0 0 80px rgba(245,215,110,0.25)",
+              animation: "checkPulse 2s ease infinite",
+            }}
+          >
+            ✓
+          </div>
+
+          <h2
+            style={{
+              fontFamily: "var(--font-cinzel), serif",
+              fontSize: "clamp(22px, 3.5vw, 32px)",
+              letterSpacing: "3px",
+              color: COR.textoDourado,
+              marginBottom: "14px",
+              textTransform: "uppercase",
+              textShadow: "0 0 25px rgba(245,215,110,0.4)",
+            }}
+          >
+            Solicitação Enviada!
+          </h2>
+
+          <p
+            style={{
+              fontSize: "14px",
+              lineHeight: "1.7",
+              opacity: 0.85,
+              marginBottom: "30px",
+              letterSpacing: "0.4px",
+            }}
+          >
+            Sua solicitação foi aberta no WhatsApp. Se a janela não abriu
+            automaticamente, clique no botão abaixo.
+          </p>
+
+          <div
+            style={{
+              height: "1px",
+              background:
+                "linear-gradient(90deg, transparent, rgba(245,215,110,0.5), transparent)",
+              marginBottom: "26px",
+            }}
+          />
+
+          <div
+            style={{
+              background: "rgba(0,0,0,0.35)",
+              borderRadius: "16px",
+              padding: "22px",
+              border: `1px solid ${COR.bordaDouradaSutil}`,
+              marginBottom: "28px",
+              textAlign: "left",
+            }}
+          >
+            <h3
+              style={{
+                fontSize: "11px",
+                letterSpacing: "2.5px",
+                textTransform: "uppercase",
+                color: COR.textoDourado,
+                fontFamily: "var(--font-cinzel), serif",
+                marginBottom: "16px",
+                textAlign: "center",
+                opacity: 0.85,
+              }}
+            >
+              Resumo do pedido
+            </h3>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+              <LinhaResumo label="Data" valor={formatarDataBR(dadosEnviados.data)} />
+              <LinhaResumo label="Horário" valor={dadosEnviados.horario} />
+              <LinhaResumo label="Evento" valor={tipo?.nome || ""} />
+              {pac && <LinhaResumo label="Pacote" valor={pac.nome} />}
+              {form && (
+                <LinhaResumo label="Formação" valor={`${form.nome} — ${form.desc}`} />
+              )}
+              <LinhaResumo label="Nome" valor={dadosEnviados.nome} />
+              <LinhaResumo label="Cidade" valor={dadosEnviados.cidade} />
+              {dadosEnviados.obs && (
+                <LinhaResumo label="Observações" valor={dadosEnviados.obs} />
+              )}
+            </div>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "12px",
+            }}
+          >
+            <button
+              onClick={reabrirWhatsApp}
+              style={{
+                width: "100%",
+                padding: "16px",
+                fontSize: "14px",
+                fontWeight: "700",
+                letterSpacing: "2px",
+                borderRadius: "14px",
+                border: "none",
+                cursor: "pointer",
+                background: "linear-gradient(135deg, #25D366, #128C7E)",
+                color: "#fff",
+                transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+                boxShadow: "0 8px 30px rgba(37,211,102,0.35)",
+                fontFamily: "var(--font-inter), sans-serif",
+                textTransform: "uppercase",
+              }}
+            >
+              💬 Abrir WhatsApp novamente
+            </button>
+
+            <button
+              onClick={fazerNovoPedido}
+              style={{
+                width: "100%",
+                padding: "16px",
+                fontSize: "13px",
+                fontWeight: "600",
+                letterSpacing: "2px",
+                borderRadius: "14px",
+                border: `1px solid ${COR.bordaDourada}`,
+                cursor: "pointer",
+                background: "rgba(245,215,110,0.05)",
+                color: COR.textoDourado,
+                transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+                fontFamily: "var(--font-inter), sans-serif",
+                textTransform: "uppercase",
+              }}
+            >
+              Fazer novo pedido
+            </button>
+          </div>
+
+          <p
             style={{
               fontSize: "11px",
-              letterSpacing: "2.5px",
-              textTransform: "uppercase",
-              color: COR.textoDourado,
-              fontFamily: "var(--font-cinzel), serif",
-              marginBottom: "16px",
-              textAlign: "center",
-              opacity: 0.85,
+              opacity: 0.5,
+              marginTop: "24px",
+              fontStyle: "italic",
+              letterSpacing: "0.5px",
             }}
           >
-            Resumo do pedido
-          </h3>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            <LinhaResumo label="Data" valor={formatarDataBR(dadosEnviados.data)} />
-            <LinhaResumo label="Horário" valor={dadosEnviados.horario} />
-            <LinhaResumo label="Evento" valor={tipo?.nome || ""} />
-            {pac && <LinhaResumo label="Pacote" valor={pac.nome} />}
-            {form && (
-              <LinhaResumo label="Formação" valor={`${form.nome} — ${form.desc}`} />
-            )}
-            <LinhaResumo label="Nome" valor={dadosEnviados.nome} />
-            <LinhaResumo label="Cidade" valor={dadosEnviados.cidade} />
-            {dadosEnviados.obs && (
-              <LinhaResumo label="Observações" valor={dadosEnviados.obs} />
-            )}
-          </div>
+            Respondemos em até 24h úteis pelo WhatsApp
+          </p>
         </div>
 
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "12px",
-          }}
-        >
-          <button
-            onClick={reabrirWhatsApp}
-            style={{
-              width: "100%",
-              padding: "16px",
-              fontSize: "14px",
-              fontWeight: "700",
-              letterSpacing: "2px",
-              borderRadius: "14px",
-              border: "none",
-              cursor: "pointer",
-              background: "linear-gradient(135deg, #25D366, #128C7E)",
-              color: "#fff",
-              transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-              boxShadow: "0 8px 30px rgba(37,211,102,0.35)",
-              fontFamily: "var(--font-inter), sans-serif",
-              textTransform: "uppercase",
-            }}
-          >
-            💬 Abrir WhatsApp novamente
-          </button>
-
-          <button
-            onClick={fazerNovoPedido}
-            style={{
-              width: "100%",
-              padding: "16px",
-              fontSize: "13px",
-              fontWeight: "600",
-              letterSpacing: "2px",
-              borderRadius: "14px",
-              border: `1px solid ${COR.bordaDourada}`,
-              cursor: "pointer",
-              background: "rgba(245,215,110,0.05)",
-              color: COR.textoDourado,
-              transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-              fontFamily: "var(--font-inter), sans-serif",
-              textTransform: "uppercase",
-            }}
-          >
-            Fazer novo pedido
-          </button>
+        {/* 💬 DEPOIMENTOS AQUI — só na tela de sucesso */}
+        <div style={{ marginTop: "50px" }}>
+          <Depoimentos />
         </div>
-
-        <p
-          style={{
-            fontSize: "11px",
-            opacity: 0.5,
-            marginTop: "24px",
-            fontStyle: "italic",
-            letterSpacing: "0.5px",
-          }}
-        >
-          Respondemos em até 24h úteis pelo WhatsApp
-        </p>
       </div>
     );
   }
 
   // ============================================
-  // 📅 CALENDÁRIO + FORMULÁRIO + DEPOIMENTOS
+  // 📅 CALENDÁRIO + FORMULÁRIO (sem depoimentos)
   // ============================================
   return (
     <div style={{ maxWidth: "700px", margin: "0 auto", width: "100%" }}>
@@ -943,7 +956,7 @@ export default function AgendaCalendar() {
           />
 
           {/* ETAPA 1 */}
-          <div ref={secaoEventoRef} style={{ marginBottom: "28px", scrollMarginTop: "20px" }}>
+          <div ref={secaoEventoRef} style={{ marginBottom: "28px", scrollMarginTop: "100px" }}>
             <h4 style={estiloTituloEtapa}>1. Que tipo de evento?</h4>
             <div style={estiloGridCards}>
               {TIPOS_EVENTO.map((t) => (
@@ -966,7 +979,7 @@ export default function AgendaCalendar() {
 
           {/* ETAPA 2 — PACOTE */}
           {eventoUsaPacote() && (
-            <div ref={secaoPacoteRef} style={{ marginBottom: "28px", scrollMarginTop: "20px" }}>
+            <div ref={secaoPacoteRef} style={{ marginBottom: "28px", scrollMarginTop: "100px" }}>
               <h4 style={estiloTituloEtapa}>2. Escolha o pacote</h4>
               <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "14px" }}>
                 {PACOTES_ESPECIAIS.map((p) => {
@@ -1043,7 +1056,7 @@ export default function AgendaCalendar() {
 
           {/* ETAPA 2 — FORMAÇÃO */}
           {tipoEvento && !eventoUsaPacote() && (
-            <div ref={secaoPacoteRef} style={{ marginBottom: "28px", scrollMarginTop: "20px" }}>
+            <div ref={secaoPacoteRef} style={{ marginBottom: "28px", scrollMarginTop: "100px" }}>
               <h4 style={estiloTituloEtapa}>2. Escolha a formação</h4>
               <div style={estiloGridCards}>
                 {FORMACOES.map((f) => (
@@ -1063,7 +1076,7 @@ export default function AgendaCalendar() {
 
           {/* ETAPA 3 */}
           {tipoEvento && (eventoUsaPacote() ? pacote : formacao) && (
-            <div ref={secaoHorarioRef} style={{ marginBottom: "28px", scrollMarginTop: "20px" }}>
+            <div ref={secaoHorarioRef} style={{ marginBottom: "28px", scrollMarginTop: "100px" }}>
               <h4 style={estiloTituloEtapa}>3. Escolha o horário</h4>
               <div
                 style={{
@@ -1129,7 +1142,7 @@ export default function AgendaCalendar() {
 
           {/* ETAPA 4 */}
           {horario && (
-            <div ref={secaoDadosRef} style={{ marginBottom: "28px", scrollMarginTop: "20px" }}>
+            <div ref={secaoDadosRef} style={{ marginBottom: "28px", scrollMarginTop: "100px" }}>
               <h4 style={estiloTituloEtapa}>4. Seus dados</h4>
               <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
                 <input
@@ -1188,9 +1201,6 @@ export default function AgendaCalendar() {
           )}
         </div>
       )}
-
-      {/* 💬 DEPOIMENTOS */}
-      <Depoimentos />
     </div>
   );
 }
