@@ -1,11 +1,6 @@
 "use client";
 
 export default function Depoimentos({ layout = "coluna" }) {
-  const gridColunas =
-    layout === "coluna"
-      ? "1fr"
-      : "repeat(auto-fit, minmax(300px, 1fr))";
-
   return (
     <div style={{ marginTop: "10px", width: "100%" }}>
       {/* TÍTULO DA SEÇÃO */}
@@ -48,17 +43,16 @@ export default function Depoimentos({ layout = "coluna" }) {
         </p>
       </div>
 
-      {/* CARDS DE PRINT */}
+      {/* CARDS DE PRINT — empilhados com largura de celular */}
       <div
         style={{
-          display: "grid",
-          gridTemplateColumns: gridColunas,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
           gap: "24px",
-          maxWidth: layout === "coluna" ? "480px" : "720px",
-          margin: "0 auto",
+          width: "100%",
         }}
       >
-        {/* PRINT 1 */}
         <PrintWhatsApp
           nome="Cliente • Casamento"
           mensagens={[
@@ -79,13 +73,12 @@ export default function Depoimentos({ layout = "coluna" }) {
             {
               lado: "enviado",
               texto:
-                "Que booommm, Fico muito feliz por isso!\nMuito obrigado, meu amigo. 🙏🏼🙏🏼",
+                "Que booommm, Fico muito feliz por isso! Muito obrigado, meu amigo. 🙏🏼🙏🏼",
               hora: "14:55",
             },
           ]}
         />
 
-        {/* PRINT 2 */}
         <PrintWhatsApp
           nome="Cliente • Evento"
           mensagens={[
@@ -116,7 +109,7 @@ export default function Depoimentos({ layout = "coluna" }) {
             {
               lado: "enviado",
               texto:
-                "Muito obrigado!\nEu que agradeço por tudo e fico muito feliz que tenham gostado!\nTô sempre a disposição!",
+                "Muito obrigado! Eu que agradeço por tudo e fico muito feliz que tenham gostado! Tô sempre a disposição!",
               hora: "15:09",
             },
           ]}
@@ -127,20 +120,21 @@ export default function Depoimentos({ layout = "coluna" }) {
 }
 
 // ============================================
-// COMPONENTE: Print de WhatsApp
+// COMPONENTE: Print de WhatsApp (formato celular)
 // ============================================
 function PrintWhatsApp({ nome, mensagens }) {
   return (
     <div
       style={{
+        width: "100%",
+        maxWidth: "340px",
         borderRadius: "20px",
         background: "#111b21",
-        padding: "8px",
+        padding: "6px",
         boxShadow:
           "0 20px 55px rgba(0,0,0,0.5), 0 0 45px rgba(245,215,110,0.06)",
         border: "1px solid rgba(245,215,110,0.18)",
         overflow: "hidden",
-        transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
       }}
     >
       {/* HEADER WhatsApp */}
@@ -148,20 +142,18 @@ function PrintWhatsApp({ nome, mensagens }) {
         style={{
           display: "flex",
           alignItems: "center",
-          gap: "10px",
-          padding: "8px 6px 10px",
+          gap: "8px",
+          padding: "8px 8px 10px",
           background: "#202c33",
           borderRadius: "14px 14px 0 0",
-          marginBottom: 0,
         }}
       >
         <span
           style={{
             color: "#00a884",
-            fontSize: "20px",
-            fontWeight: "300",
+            fontSize: "16px",
             lineHeight: 1,
-            padding: "0 4px",
+            padding: "0 2px",
           }}
         >
           ‹
@@ -169,15 +161,15 @@ function PrintWhatsApp({ nome, mensagens }) {
 
         <div
           style={{
-            width: "32px",
-            height: "32px",
+            width: "28px",
+            height: "28px",
             borderRadius: "50%",
             background: "#6a7175",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             color: "#e9edef",
-            fontSize: "13px",
+            fontSize: "12px",
             fontWeight: "600",
             flexShrink: 0,
             fontFamily: "'Segoe UI', Helvetica, Arial, sans-serif",
@@ -190,7 +182,7 @@ function PrintWhatsApp({ nome, mensagens }) {
           <div
             style={{
               color: "#e9edef",
-              fontSize: "14px",
+              fontSize: "12.5px",
               fontWeight: "500",
               whiteSpace: "nowrap",
               overflow: "hidden",
@@ -203,8 +195,7 @@ function PrintWhatsApp({ nome, mensagens }) {
           <div
             style={{
               color: "#8696a0",
-              fontSize: "11px",
-              marginTop: "1px",
+              fontSize: "10px",
               fontFamily: "'Segoe UI', Helvetica, Arial, sans-serif",
             }}
           >
@@ -215,10 +206,10 @@ function PrintWhatsApp({ nome, mensagens }) {
         <div
           style={{
             display: "flex",
-            gap: "14px",
+            gap: "10px",
             color: "#aebac1",
-            fontSize: "16px",
-            paddingRight: "6px",
+            fontSize: "13px",
+            paddingRight: "4px",
           }}
         >
           <span>📞</span>
@@ -232,10 +223,10 @@ function PrintWhatsApp({ nome, mensagens }) {
           background: "#0b141a",
           backgroundImage:
             "radial-gradient(circle at 15% 20%, rgba(0,168,132,0.04) 0%, transparent 40%), radial-gradient(circle at 85% 80%, rgba(245,215,110,0.03) 0%, transparent 40%)",
-          padding: "12px 8px 14px",
+          padding: "10px 8px 12px",
           display: "flex",
           flexDirection: "column",
-          gap: "4px",
+          gap: "3px",
           borderRadius: "0 0 14px 14px",
         }}
       >
@@ -248,7 +239,7 @@ function PrintWhatsApp({ nome, mensagens }) {
 }
 
 // ============================================
-// COMPONENTE: Balão de mensagem
+// COMPONENTE: Balão de mensagem (compacto)
 // ============================================
 function BalãoMensagem({ lado, texto, hora }) {
   if (lado === "sistema") {
@@ -258,8 +249,8 @@ function BalãoMensagem({ lado, texto, hora }) {
           style={{
             background: "#182229",
             color: "#8696a0",
-            fontSize: "10.5px",
-            padding: "5px 12px",
+            fontSize: "10px",
+            padding: "4px 10px",
             borderRadius: "8px",
             letterSpacing: "0.3px",
             fontWeight: "500",
@@ -284,13 +275,13 @@ function BalãoMensagem({ lado, texto, hora }) {
     >
       <div
         style={{
-          maxWidth: "82%",
-          padding: "6px 9px 18px",
+          maxWidth: "85%",
+          padding: "5px 8px 16px",
           borderRadius: recebido ? "8px 8px 8px 2px" : "8px 8px 2px 8px",
           background: recebido ? "#202c33" : "#005c4b",
           color: "#e9edef",
-          fontSize: "12.5px",
-          lineHeight: "1.42",
+          fontSize: "11.5px",
+          lineHeight: "1.4",
           position: "relative",
           boxShadow: "0 1px 1px rgba(0,0,0,0.25)",
           wordWrap: "break-word",
@@ -304,8 +295,8 @@ function BalãoMensagem({ lado, texto, hora }) {
           style={{
             position: "absolute",
             bottom: "3px",
-            right: "8px",
-            fontSize: "10px",
+            right: "7px",
+            fontSize: "9px",
             color: recebido ? "#8696a0" : "#a8d5c4",
             display: "flex",
             alignItems: "center",
@@ -319,8 +310,8 @@ function BalãoMensagem({ lado, texto, hora }) {
             <span
               style={{
                 color: "#53bdeb",
-                fontSize: "11px",
-                marginLeft: "2px",
+                fontSize: "10px",
+                marginLeft: "1px",
               }}
             >
               ✓✓
