@@ -883,4 +883,42 @@ function estiloCard(selecionado) {
     background: selecionado ? "rgba(245,215,110,0.18)" : "rgba(245,215,110,0.04)",
     border: selecionado
       ? "2px solid #f5d76e"
-      : "1px solid rgba(255,255
+      : "1px solid rgba(255,255,255,0.12)",
+    cursor: "pointer",
+    transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+    textAlign: "center",
+    boxShadow: selecionado ? "0 0 25px rgba(245,215,110,0.2)" : "none",
+  };
+}
+
+const estiloCardEmoji = {
+  fontSize: "32px",
+  marginBottom: "10px",
+};
+
+const estiloCardNome = {
+  fontSize: "14px",
+  fontWeight: "700",
+  marginBottom: "5px",
+  lineHeight: "1.2",
+  letterSpacing: "0.3px",
+};
+
+const estiloCardDesc = {
+  fontSize: "11px",
+  opacity: 0.65,
+  lineHeight: "1.4",
+};
+
+const estiloInput = {
+  padding: "15px 16px",
+  borderRadius: "12px",
+  border: "1px solid rgba(245,215,110,0.2)",
+  background: "rgba(0,0,0,0.35)",
+  color: "#fff",
+  fontSize: "14px",
+  outline: "none",
+  fontFamily: "var(--font-inter), inherit",
+  transition: "all 0.3s ease",
+  letterSpacing: "0.3px",
+};
