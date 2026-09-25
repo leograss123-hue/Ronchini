@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Depoimentos from "./Depoimentos";
 
 const CSV_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vT6Xp4UtF4OQO2PyaUbSMRlRYZrQavHVZhkSoxHfkBBfxM9ok6WWQR8mM-Pae6eXzjgpj9wJSo4bPb9/pub?output=csv";
@@ -111,7 +112,6 @@ export default function AgendaCalendar() {
   const [cidade, setCidade] = useState("");
   const [obs, setObs] = useState("");
 
-  // 🆕 Estado da tela de sucesso
   const [enviado, setEnviado] = useState(false);
   const [dadosEnviados, setDadosEnviados] = useState(null);
 
@@ -178,11 +178,8 @@ export default function AgendaCalendar() {
     if (horario && !enviado) scrollPara(secaoDadosRef);
   }, [horario]);
 
-  // 🆕 Scroll para a tela de sucesso quando envia
   useEffect(() => {
-    if (enviado) {
-      scrollPara(telaSucessoRef);
-    }
+    if (enviado) scrollPara(telaSucessoRef);
   }, [enviado]);
 
   function mesAnterior() {
@@ -410,7 +407,6 @@ export default function AgendaCalendar() {
           animation: "sucessoEntrada 0.7s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
-        {/* ✅ Ícone de check com animação */}
         <div
           style={{
             width: "90px",
@@ -459,7 +455,6 @@ export default function AgendaCalendar() {
           automaticamente, clique no botão abaixo.
         </p>
 
-        {/* Linha decorativa */}
         <div
           style={{
             height: "1px",
@@ -469,7 +464,6 @@ export default function AgendaCalendar() {
           }}
         />
 
-        {/* 📋 Resumo do pedido */}
         <div
           style={{
             background: "rgba(0,0,0,0.35)",
@@ -511,7 +505,6 @@ export default function AgendaCalendar() {
           </div>
         </div>
 
-        {/* 🔘 Botões de ação */}
         <div
           style={{
             display: "flex",
@@ -579,7 +572,7 @@ export default function AgendaCalendar() {
   }
 
   // ============================================
-  // 📅 CALENDÁRIO + FORMULÁRIO (fluxo normal)
+  // 📅 CALENDÁRIO + FORMULÁRIO + DEPOIMENTOS
   // ============================================
   return (
     <div style={{ maxWidth: "700px", margin: "0 auto", width: "100%" }}>
@@ -1195,6 +1188,9 @@ export default function AgendaCalendar() {
           )}
         </div>
       )}
+
+      {/* 💬 DEPOIMENTOS */}
+      <Depoimentos />
     </div>
   );
 }
