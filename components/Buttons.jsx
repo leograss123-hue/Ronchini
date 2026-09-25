@@ -2,25 +2,10 @@ export default function Buttons({ goToScene }) {
   return (
     <div className="card">
       <button
-        className="ticket"
+        className="btn glass"
         onClick={() => goToScene("contratar")}
       >
-        <span className="ticketGlow" />
-        <span className="pulseDot" />
-
-        <div className="ticketContent">
-          <span className="ticketLabel">
-            CONTRATAÇÃO PROFISSIONAL
-          </span>
-
-          <span className="ticketTitle">
-            🎸 Contrate Agora
-          </span>
-
-          <span className="ticketHint">
-            Shows, eventos e casamentos
-          </span>
-        </div>
+        🎸 Contrate Agora
       </button>
 
       <button
