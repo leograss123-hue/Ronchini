@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const CSV_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vT6Xp4UtF4OQO2PyaUbSMRlRYZrQavHVZhkSoxHfkBBfxM9ok6WWQR8mM-Pae6eXzjgpj9wJSo4bPb9/pub?output=csv";
@@ -23,7 +23,7 @@ const DURACAO_HORAS = 4;
 const TIPOS_EVENTO = [
   { id: "casamento", emoji: "💍", nome: "Casamento", desc: "Cerimônia e recepção" },
   { id: "formatura", emoji: "🎓", nome: "Formatura", desc: "Colações e festas" },
-  { id: "publico", emoji: "🏛", nome: "Evento Público", desc: "Prefeituras e festivais" },
+  { id: "publico", emoji: "🏛️", nome: "Evento Público", desc: "Prefeituras e festivais" },
   { id: "aniversario", emoji: "🎉", nome: "Aniversário", desc: "Festas e comemorações" },
   { id: "corporativo", emoji: "🏢", nome: "Corporativo", desc: "Empresas e eventos" },
   { id: "confraternizacao", emoji: "🍻", nome: "Confraternização", desc: "Encontros e festas" },
@@ -38,7 +38,6 @@ const FORMACOES = [
   { id: "banda_com_luz", emoji: "🎤", nome: "Banda Completa", desc: "Com luz e som" },
 ];
 
-// Pacotes usados para Casamento, Formatura e Evento Público
 const PACOTES_ESPECIAIS = [
   {
     id: "standard",
@@ -77,7 +76,6 @@ const PACOTES_ESPECIAIS = [
   },
 ];
 
-// Eventos que usam os pacotes especiais
 const EVENTOS_COM_PACOTE = ["casamento", "formatura", "publico"];
 
 export default function AgendaCalendar() {
@@ -97,6 +95,8 @@ export default function AgendaCalendar() {
   const [nome, setNome] = useState("");
   const [cidade, setCidade] = useState("");
   const [obs, setObs] = useState("");
+
+  const formRef = useRef(null);
 
   useEffect(() => {
     fetch(CSV_URL)
@@ -127,6 +127,18 @@ export default function AgendaCalendar() {
         setLoading(false);
       });
   }, []);
+
+  // Scroll automático quando seleciona um dia
+  useEffect(() => {
+    if (dataSelecionada && formRef.current) {
+      setTimeout(() => {
+        formRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 150);
+    }
+  }, [dataSelecionada]);
 
   function mesAnterior() {
     if (mesAtual === 0) {
@@ -177,7 +189,6 @@ export default function AgendaCalendar() {
     return HORARIOS.some((h) => !horarioBloqueado(dataStr, h));
   }
 
-  // Verifica se algum horário do dia está ocupado (pra sinalizar)
   function diaTemEvento(dataStr) {
     return HORARIOS.some((h) => horarioBloqueado(dataStr, h));
   }
@@ -212,6 +223,7 @@ export default function AgendaCalendar() {
     return EVENTOS_COM_PACOTE.includes(tipoEvento);
   }
 
+  // Monta linhas da mensagem SEM emojis problemáticos
   function gerarMensagem() {
     if (!dataSelecionada || !tipoEvento || !horario) return "";
 
@@ -220,21 +232,21 @@ export default function AgendaCalendar() {
 
     linhas.push("🎸 *NOVA SOLICITAÇÃO DE CONTRATAÇÃO*");
     linhas.push("");
-    linhas.push(`📅 Data: ${formatarDataBR(dataSelecionada)}`);
-    linhas.push(`🕐 Horário: ${horario}`);
-    linhas.push(`🎉 Tipo de evento: ${tipo?.nome || ""}`);
+    linhas.push(`📅 *Data:* ${formatarDataBR(dataSelecionada)}`);
+    linhas.push(`🕐 *Horário:* ${horario}`);
+    linhas.push(`🎉 *Tipo de evento:* ${tipo?.nome || ""}`);
 
     if (eventoUsaPacote()) {
       const pac = PACOTES_ESPECIAIS.find((p) => p.id === pacote);
-      if (pac) linhas.push(`💎 Pacote: ${pac.nome}`);
+      if (pac) linhas.push(`💎 *Pacote:* ${pac.nome}`);
     } else {
       const form = FORMACOES.find((f) => f.id === formacao);
-      if (form) linhas.push(`🎤 Formação: ${form.nome} (${form.desc})`);
+      if (form) linhas.push(`🎤 *Formação:* ${form.nome} (${form.desc})`);
     }
 
-    if (nome) linhas.push(`👤 Nome: ${nome}`);
-    if (cidade) linhas.push(`📍 Cidade: ${cidade}`);
-    if (obs) linhas.push(`📝 Observações: ${obs}`);
+    if (nome) linhas.push(`👤 *Nome:* ${nome}`);
+    if (cidade) linhas.push(`📍 *Cidade:* ${cidade}`);
+    if (obs) linhas.push(`📝 *Observações:* ${obs}`);
 
     linhas.push("");
     linhas.push("Aguardo contato para orçamento!");
@@ -242,9 +254,15 @@ export default function AgendaCalendar() {
     return linhas.join("\n");
   }
 
+  // Codificação robusta: codifica cada linha e junta com %0A
   function enviarWhatsApp() {
     const msg = gerarMensagem();
-    const url = `https://wa.me/5535991538017?text=${encodeURIComponent(msg)}`;
+    const linhas = msg.split("\n");
+    const textoCodificado = linhas
+      .map((l) => encodeURIComponent(l))
+      .join("%0A");
+
+    const url = `https://wa.me/5535991538017?text=${textoCodificado}`;
     window.open(url, "_blank");
   }
 
@@ -486,11 +504,25 @@ export default function AgendaCalendar() {
             Selecionado
           </div>
         </div>
+
+        {/* Dica de scroll */}
+        <p
+          style={{
+            textAlign: "center",
+            fontSize: "11px",
+            opacity: 0.6,
+            marginTop: "15px",
+            fontStyle: "italic",
+          }}
+        >
+          👆 Selecione uma data para ver as opções de contratação
+        </p>
       </div>
 
       {/* ============ FORMULÁRIO ============ */}
       {dataSelecionada && (
         <div
+          ref={formRef}
           style={{
             padding: "25px",
             background: "rgba(0,0,0,0.5)",
@@ -532,7 +564,7 @@ export default function AgendaCalendar() {
             </div>
           </div>
 
-          {/* ETAPA 2: PACOTE (casamento, formatura, evento público) */}
+          {/* ETAPA 2: PACOTE */}
           {eventoUsaPacote() && (
             <div style={{ marginBottom: "25px" }}>
               <h4 style={estiloTituloEtapa}>2. Escolha o pacote</h4>
@@ -612,7 +644,7 @@ export default function AgendaCalendar() {
             </div>
           )}
 
-          {/* ETAPA 2: FORMAÇÃO (outros eventos) */}
+          {/* ETAPA 2: FORMAÇÃO */}
           {tipoEvento && !eventoUsaPacote() && (
             <div style={{ marginBottom: "25px" }}>
               <h4 style={estiloTituloEtapa}>2. Escolha a formação</h4>
