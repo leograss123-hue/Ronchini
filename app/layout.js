@@ -45,12 +45,21 @@ export const metadata = {
     siteName: "Ronchini",
     locale: "pt_BR",
     type: "website",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Ronchini — Shows e Eventos",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Ronchini | Shows e Eventos",
     description:
       "Sertanejo de verdade, com tradição e energia. Agende o show do Ronchini.",
+    images: ["/og-image.jpg"],
   },
   robots: {
     index: true,
