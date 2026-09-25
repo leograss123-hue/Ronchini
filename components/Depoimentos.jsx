@@ -2,7 +2,7 @@
 
 export default function Depoimentos() {
   return (
-    <div style={{ marginTop: "50px", width: "100%" }}>
+    <div style={{ marginTop: "60px", width: "100%" }}>
       {/* TÍTULO DA SEÇÃO */}
       <div style={{ textAlign: "center", marginBottom: "30px" }}>
         <div
@@ -56,18 +56,9 @@ export default function Depoimentos() {
         {/* PRINT 1 */}
         <PrintWhatsApp
           nome="Cliente • Casamento"
-          hora="14:55"
           mensagens={[
-            {
-              lado: "recebido",
-              texto: "Hoje",
-              tipo: "data",
-            },
-            {
-              lado: "recebido",
-              texto: "🙏🏼🙏🏼🙏🏼",
-              hora: "14:52",
-            },
+            { lado: "sistema", texto: "Hoje" },
+            { lado: "recebido", texto: "🙏🏼🙏🏼🙏🏼", hora: "14:52" },
             {
               lado: "recebido",
               texto:
@@ -92,13 +83,8 @@ export default function Depoimentos() {
         {/* PRINT 2 */}
         <PrintWhatsApp
           nome="Cliente • Evento"
-          hora="15:08"
           mensagens={[
-            {
-              lado: "recebido",
-              texto: "Ontem",
-              tipo: "data",
-            },
+            { lado: "sistema", texto: "Ontem" },
             {
               lado: "recebido",
               texto: "Oiii, Ronchini, tudo bem????,",
@@ -106,8 +92,7 @@ export default function Depoimentos() {
             },
             {
               lado: "recebido",
-              texto:
-                "Muito obrigado pelo show, que bom que gostaram tb",
+              texto: "Muito obrigado pelo show, que bom que gostaram tb",
               hora: "15:06",
             },
             {
@@ -122,11 +107,7 @@ export default function Depoimentos() {
                 "Muita gente me disse que foi o melhor show sertanejo que já viram!!!!!",
               hora: "15:08",
             },
-            {
-              lado: "recebido",
-              texto: "Parabéns!!!!!!!!!",
-              hora: "15:08",
-            },
+            { lado: "recebido", texto: "Parabéns!!!!!!!!!", hora: "15:08" },
             {
               lado: "enviado",
               texto:
@@ -141,99 +122,99 @@ export default function Depoimentos() {
 }
 
 // ============================================
-// COMPONENTE: Print de WhatsApp (light mode)
+// COMPONENTE: Print de WhatsApp
 // ============================================
-function PrintWhatsApp({ nome, hora, mensagens }) {
+function PrintWhatsApp({ nome, mensagens }) {
   return (
     <div
       style={{
-        borderRadius: "18px",
-        background: "#ece5dd",
-        padding: "12px",
+        borderRadius: "20px",
+        background: "#111b21",
+        padding: "8px",
         boxShadow:
-          "0 15px 45px rgba(0,0,0,0.45), 0 0 40px rgba(245,215,110,0.06)",
-        border: "1px solid rgba(245,215,110,0.15)",
+          "0 20px 55px rgba(0,0,0,0.5), 0 0 45px rgba(245,215,110,0.06)",
+        border: "1px solid rgba(245,215,110,0.18)",
         overflow: "hidden",
         transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
       }}
     >
-      {/* HEADER estilo WhatsApp (light) */}
+      {/* HEADER WhatsApp */}
       <div
         style={{
           display: "flex",
           alignItems: "center",
           gap: "10px",
-          paddingBottom: "10px",
-          paddingTop: "4px",
-          paddingLeft: "4px",
-          paddingRight: "4px",
-          borderBottom: "1px solid rgba(0,0,0,0.08)",
-          marginBottom: "10px",
+          padding: "8px 6px 10px",
+          background: "#202c33",
+          borderRadius: "14px 14px 0 0",
+          marginBottom: 0,
         }}
       >
-        {/* Seta voltar */}
         <span
           style={{
             color: "#00a884",
-            fontSize: "18px",
-            fontWeight: "400",
+            fontSize: "20px",
+            fontWeight: "300",
             lineHeight: 1,
+            padding: "0 4px",
           }}
         >
           ‹
         </span>
 
-        {/* Avatar */}
+        {/* Avatar neutro, sem iniciais coloridas */}
         <div
           style={{
-            width: "34px",
-            height: "34px",
+            width: "32px",
+            height: "32px",
             borderRadius: "50%",
-            background: "linear-gradient(135deg, #667781, #3b4a54)",
+            background: "#6a7175",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            color: "#fff",
-            fontSize: "14px",
-            fontWeight: "700",
+            color: "#e9edef",
+            fontSize: "13px",
+            fontWeight: "600",
             flexShrink: 0,
+            fontFamily: "'Segoe UI', Helvetica, Arial, sans-serif",
           }}
         >
           {nome.charAt(0)}
         </div>
 
-        {/* Nome */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div
             style={{
-              color: "#111",
+              color: "#e9edef",
               fontSize: "14px",
-              fontWeight: "600",
+              fontWeight: "500",
               whiteSpace: "nowrap",
               overflow: "hidden",
               textOverflow: "ellipsis",
+              fontFamily: "'Segoe UI', Helvetica, Arial, sans-serif",
             }}
           >
             {nome}
           </div>
           <div
             style={{
-              color: "#667781",
+              color: "#8696a0",
               fontSize: "11px",
               marginTop: "1px",
+              fontFamily: "'Segoe UI', Helvetica, Arial, sans-serif",
             }}
           >
             online
           </div>
         </div>
 
-        {/* Ícones */}
         <div
           style={{
             display: "flex",
-            gap: "12px",
-            color: "#54656f",
+            gap: "14px",
+            color: "#aebac1",
             fontSize: "16px",
+            paddingRight: "6px",
           }}
         >
           <span>📞</span>
@@ -241,16 +222,17 @@ function PrintWhatsApp({ nome, hora, mensagens }) {
         </div>
       </div>
 
-      {/* ÁREA DAS MENSAGENS */}
+      {/* ÁREA DE MENSAGENS */}
       <div
         style={{
-          background: "#ece5dd",
+          background: "#0b141a",
           backgroundImage:
-            "radial-gradient(circle at 15% 20%, rgba(255,255,255,0.15) 0%, transparent 30%), radial-gradient(circle at 85% 80%, rgba(255,255,255,0.12) 0%, transparent 30%)",
-          padding: "8px 4px",
+            "radial-gradient(circle at 15% 20%, rgba(0,168,132,0.04) 0%, transparent 40%), radial-gradient(circle at 85% 80%, rgba(245,215,110,0.03) 0%, transparent 40%)",
+          padding: "12px 8px 14px",
           display: "flex",
           flexDirection: "column",
           gap: "4px",
+          borderRadius: "0 0 14px 14px",
         }}
       >
         {mensagens.map((m, i) => (
@@ -262,28 +244,23 @@ function PrintWhatsApp({ nome, hora, mensagens }) {
 }
 
 // ============================================
-// COMPONENTE: Balão de mensagem (light)
+// COMPONENTE: Balão de mensagem
 // ============================================
-function BalãoMensagem({ lado, texto, hora, tipo }) {
-  // Mensagem de data (centralizada)
-  if (tipo === "data") {
+function BalãoMensagem({ lado, texto, hora }) {
+  // Sistema (Hoje/Ontem)
+  if (lado === "sistema") {
     return (
-      <div
-        style={{
-          textAlign: "center",
-          margin: "6px 0",
-        }}
-      >
+      <div style={{ textAlign: "center", margin: "4px 0 6px" }}>
         <span
           style={{
-            background: "#ffffff",
-            color: "#54656f",
+            background: "#182229",
+            color: "#8696a0",
             fontSize: "10.5px",
             padding: "5px 12px",
-            borderRadius: "7px",
+            borderRadius: "8px",
             letterSpacing: "0.3px",
             fontWeight: "500",
-            boxShadow: "0 1px 1px rgba(0,0,0,0.08)",
+            fontFamily: "'Segoe UI', Helvetica, Arial, sans-serif",
           }}
         >
           {texto}
@@ -306,33 +283,32 @@ function BalãoMensagem({ lado, texto, hora, tipo }) {
         style={{
           maxWidth: "82%",
           padding: "6px 9px 18px",
-          borderRadius: recebido
-            ? "8px 8px 8px 2px"
-            : "8px 8px 2px 8px",
-          background: recebido ? "#ffffff" : "#d9fdd3",
-          color: "#111b21",
+          borderRadius: recebido ? "8px 8px 8px 2px" : "8px 8px 2px 8px",
+          background: recebido ? "#202c33" : "#005c4b",
+          color: "#e9edef",
           fontSize: "12.5px",
-          lineHeight: "1.4",
+          lineHeight: "1.42",
           position: "relative",
-          boxShadow: "0 1px 1px rgba(0,0,0,0.08)",
+          boxShadow: "0 1px 1px rgba(0,0,0,0.25)",
           wordWrap: "break-word",
           whiteSpace: "pre-line",
+          fontFamily: "'Segoe UI', Helvetica, Arial, sans-serif",
         }}
       >
         <span style={{ display: "block" }}>{texto}</span>
 
-        {/* Hora + check */}
         <span
           style={{
             position: "absolute",
             bottom: "3px",
             right: "8px",
             fontSize: "10px",
-            color: "#667781",
+            color: recebido ? "#8696a0" : "#a8d5c4",
             display: "flex",
             alignItems: "center",
             gap: "2px",
             whiteSpace: "nowrap",
+            fontFamily: "'Segoe UI', Helvetica, Arial, sans-serif",
           }}
         >
           {hora}
