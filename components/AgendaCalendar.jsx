@@ -78,6 +78,9 @@ const PACOTES_ESPECIAIS = [
 
 const EVENTOS_COM_PACOTE = ["casamento", "formatura", "publico"];
 
+// Fim de semana considerado: Quinta (4), Sexta (5), Sábado (6), Domingo (0)
+const DIAS_FIM_DE_SEMANA = [4, 5, 6, 0];
+
 export default function AgendaCalendar() {
   const [agenda, setAgenda] = useState({});
   const [loading, setLoading] = useState(true);
@@ -96,13 +99,11 @@ export default function AgendaCalendar() {
   const [cidade, setCidade] = useState("");
   const [obs, setObs] = useState("");
 
-  // Refs para scroll automático de cada etapa
   const secaoEventoRef = useRef(null);
   const secaoPacoteRef = useRef(null);
   const secaoHorarioRef = useRef(null);
   const secaoDadosRef = useRef(null);
 
-  // Função helper de scroll suave
   function scrollPara(ref) {
     if (ref.current) {
       setTimeout(() => {
@@ -144,32 +145,20 @@ export default function AgendaCalendar() {
       });
   }, []);
 
-  // Scroll quando uma data é selecionada → vai pra seção 1 (tipo de evento)
   useEffect(() => {
-    if (dataSelecionada) {
-      scrollPara(secaoEventoRef);
-    }
+    if (dataSelecionada) scrollPara(secaoEventoRef);
   }, [dataSelecionada]);
 
-  // Scroll quando escolhe tipo de evento → vai pra seção 2 (pacote/formação)
   useEffect(() => {
-    if (tipoEvento) {
-      scrollPara(secaoPacoteRef);
-    }
+    if (tipoEvento) scrollPara(secaoPacoteRef);
   }, [tipoEvento]);
 
-  // Scroll quando escolhe pacote ou formação → vai pra seção 3 (horário)
   useEffect(() => {
-    if (pacote || formacao) {
-      scrollPara(secaoHorarioRef);
-    }
+    if (pacote || formacao) scrollPara(secaoHorarioRef);
   }, [pacote, formacao]);
 
-  // Scroll quando escolhe horário → vai pra seção 4 (dados)
   useEffect(() => {
-    if (horario) {
-      scrollPara(secaoDadosRef);
-    }
+    if (horario) scrollPara(secaoDadosRef);
   }, [horario]);
 
   function mesAnterior() {
@@ -199,6 +188,15 @@ export default function AgendaCalendar() {
   function formatarDataBR(dataStr) {
     const [a, m, d] = dataStr.split("-");
     return `${d}/${m}/${a}`;
+  }
+
+  // Verifica se uma data (dia, mês, ano) é anterior a hoje
+  function ehDataPassada(dia, mes, ano) {
+    const d = new Date(ano, mes, dia);
+    d.setHours(0, 0, 0, 0);
+    const hojeZero = new Date();
+    hojeZero.setHours(0, 0, 0, 0);
+    return d < hojeZero;
   }
 
   function horarioBloqueado(dataStr, horaStr) {
@@ -246,6 +244,7 @@ export default function AgendaCalendar() {
 
   function selecionarDia(dia) {
     const dataStr = formatarData(dia);
+    if (ehDataPassada(dia, mesAtual, anoAtual)) return;
     if (!diaTemAlgumLivre(dataStr)) return;
     setDataSelecionada(dataStr);
     resetarSelecoes();
@@ -412,9 +411,38 @@ export default function AgendaCalendar() {
             }
 
             const dataStr = formatarData(dia);
+            const passado = ehDataPassada(dia, mesAtual, anoAtual);
             const temLivre = diaTemAlgumLivre(dataStr);
             const temEvento = diaTemEvento(dataStr);
             const isSelecionado = dataSelecionada === dataStr;
+
+            // Descobre o dia da semana da data
+            const dataObj = new Date(anoAtual, mesAtual, dia);
+            const diaSemana = dataObj.getDay();
+            const isFimDeSemana = DIAS_FIM_DE_SEMANA.includes(diaSemana);
+
+            const clicavel = !passado && temLivre;
+
+            // Define a cor de fundo
+            let background;
+            let color;
+            let opacity = 1;
+
+            if (passado) {
+              background = "rgba(255,255,255,0.03)";
+              color = "rgba(255,255,255,0.25)";
+              opacity = 0.7;
+            } else if (!temLivre) {
+              background = "rgba(255,255,255,0.05)";
+              color = "rgba(255,255,255,0.25)";
+              opacity = 0.5;
+            } else if (isSelecionado) {
+              background = "#f5d76e";
+              color = "#000";
+            } else {
+              background = "#22c55e";
+              color = "#000";
+            }
 
             return (
               <div
@@ -429,20 +457,44 @@ export default function AgendaCalendar() {
                   borderRadius: "8px",
                   fontSize: "14px",
                   fontWeight: "600",
-                  background: !temLivre
-                    ? "rgba(255,255,255,0.05)"
-                    : isSelecionado
-                    ? "#f5d76e"
-                    : "#22c55e",
-                  color: !temLivre ? "rgba(255,255,255,0.25)" : "#000",
+                  background,
+                  color,
                   border: isSelecionado ? "2px solid #fff" : "none",
-                  cursor: temLivre ? "pointer" : "not-allowed",
+                  cursor: clicavel ? "pointer" : "not-allowed",
                   transition: "all 0.2s",
-                  opacity: temLivre ? 1 : 0.5,
+                  opacity,
                 }}
               >
                 {dia}
-                {temLivre && temEvento && !isSelecionado && (
+
+                {/* ✅ Check em fins de semana passados */}
+                {passado && isFimDeSemana && (
+                  <span
+                    title="Show realizado"
+                    style={{
+                      position: "absolute",
+                      top: "-2px",
+                      right: "-2px",
+                      fontSize: "10px",
+                      fontWeight: "900",
+                      background: "#22c55e",
+                      color: "#fff",
+                      borderRadius: "50%",
+                      width: "14px",
+                      height: "14px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      lineHeight: 1,
+                      boxShadow: "0 0 4px rgba(34,197,94,0.6)",
+                    }}
+                  >
+                    ✓
+                  </span>
+                )}
+
+                {/* Ponto amarelo em dias com evento e vaga */}
+                {!passado && temLivre && temEvento && !isSelecionado && (
                   <span
                     title="Este dia já tem evento marcado"
                     style={{
@@ -462,11 +514,12 @@ export default function AgendaCalendar() {
           })}
         </div>
 
+        {/* Legenda */}
         <div
           style={{
             display: "flex",
             justifyContent: "center",
-            gap: "16px",
+            gap: "14px",
             marginTop: "20px",
             fontSize: "11px",
             flexWrap: "wrap",
@@ -533,6 +586,39 @@ export default function AgendaCalendar() {
             />
             Selecionado
           </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <span
+              style={{
+                position: "relative",
+                width: "14px",
+                height: "14px",
+                borderRadius: "4px",
+                background: "rgba(255,255,255,0.03)",
+                display: "inline-block",
+              }}
+            >
+              <span
+                style={{
+                  position: "absolute",
+                  top: "-3px",
+                  right: "-3px",
+                  fontSize: "9px",
+                  fontWeight: "900",
+                  background: "#22c55e",
+                  color: "#fff",
+                  borderRadius: "50%",
+                  width: "11px",
+                  height: "11px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                ✓
+              </span>
+            </span>
+            Show realizado
+          </div>
         </div>
 
         <p
@@ -570,7 +656,6 @@ export default function AgendaCalendar() {
             📅 {formatarDataBR(dataSelecionada)}
           </h3>
 
-          {/* ETAPA 1: TIPO DE EVENTO */}
           <div ref={secaoEventoRef} style={{ marginBottom: "25px", scrollMarginTop: "20px" }}>
             <h4 style={estiloTituloEtapa}>1. Que tipo de evento?</h4>
             <div style={estiloGridCards}>
@@ -592,7 +677,6 @@ export default function AgendaCalendar() {
             </div>
           </div>
 
-          {/* ETAPA 2: PACOTE */}
           {eventoUsaPacote() && (
             <div ref={secaoPacoteRef} style={{ marginBottom: "25px", scrollMarginTop: "20px" }}>
               <h4 style={estiloTituloEtapa}>2. Escolha o pacote</h4>
@@ -672,7 +756,6 @@ export default function AgendaCalendar() {
             </div>
           )}
 
-          {/* ETAPA 2: FORMAÇÃO */}
           {tipoEvento && !eventoUsaPacote() && (
             <div ref={secaoPacoteRef} style={{ marginBottom: "25px", scrollMarginTop: "20px" }}>
               <h4 style={estiloTituloEtapa}>2. Escolha a formação</h4>
@@ -692,7 +775,6 @@ export default function AgendaCalendar() {
             </div>
           )}
 
-          {/* ETAPA 3: HORÁRIO */}
           {tipoEvento && (eventoUsaPacote() ? pacote : formacao) && (
             <div ref={secaoHorarioRef} style={{ marginBottom: "25px", scrollMarginTop: "20px" }}>
               <h4 style={estiloTituloEtapa}>3. Escolha o horário</h4>
@@ -747,7 +829,6 @@ export default function AgendaCalendar() {
             </div>
           )}
 
-          {/* ETAPA 4: DADOS */}
           {horario && (
             <div ref={secaoDadosRef} style={{ marginBottom: "25px", scrollMarginTop: "20px" }}>
               <h4 style={estiloTituloEtapa}>4. Seus dados</h4>
@@ -779,7 +860,6 @@ export default function AgendaCalendar() {
             </div>
           )}
 
-          {/* ETAPA 5: BOTÃO ENVIAR */}
           {horario && (
             <button
               onClick={enviarWhatsApp}
