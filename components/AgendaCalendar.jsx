@@ -79,6 +79,23 @@ const PACOTES_ESPECIAIS = [
 const EVENTOS_COM_PACOTE = ["casamento", "formatura", "publico"];
 const DIAS_FIM_DE_SEMANA = [4, 5, 6, 0];
 
+// ============ CORES DO TEMA ============
+const COR = {
+  douradoClaro: "#f5d76e",
+  dourado: "#d4af37",
+  douradoEscuro: "#8c6b1f",
+  verde: "#22c55e",
+  cinzaClaro: "rgba(255,255,255,0.05)",
+  cinzaMedio: "rgba(255,255,255,0.1)",
+  textoDourado: "#f5d76e",
+  bgCard: "rgba(245,215,110,0.04)",
+  bgCardHover: "rgba(245,215,110,0.10)",
+  bgCardSelecionado: "rgba(245,215,110,0.18)",
+  bordaDourada: "rgba(245,215,110,0.35)",
+  bordaDouradaForte: "rgba(245,215,110,0.7)",
+  bordaSuave: "rgba(255,255,255,0.12)",
+};
+
 export default function AgendaCalendar() {
   const [agenda, setAgenda] = useState({});
   const [loading, setLoading] = useState(true);
@@ -259,21 +276,21 @@ export default function AgendaCalendar() {
 
     linhas.push("🎸 *NOVA SOLICITAÇÃO DE CONTRATAÇÃO*");
     linhas.push("");
-    linhas.push(`📅 *Data:* ${formatarDataBR(dataSelecionada)}`);
-    linhas.push(`🕐 *Horário:* ${horario}`);
-    linhas.push(`🎉 *Tipo de evento:* ${tipo?.nome || ""}`);
+    linhas.push(`▸ *Data:* ${formatarDataBR(dataSelecionada)}`);
+    linhas.push(`▸ *Horário:* ${horario}`);
+    linhas.push(`▸ *Tipo de evento:* ${tipo?.nome || ""}`);
 
     if (eventoUsaPacote()) {
       const pac = PACOTES_ESPECIAIS.find((p) => p.id === pacote);
-      if (pac) linhas.push(`💎 *Pacote:* ${pac.nome}`);
+      if (pac) linhas.push(`▸ *Pacote:* ${pac.nome}`);
     } else {
       const form = FORMACOES.find((f) => f.id === formacao);
-      if (form) linhas.push(`🎤 *Formação:* ${form.nome} (${form.desc})`);
+      if (form) linhas.push(`▸ *Formação:* ${form.nome} (${form.desc})`);
     }
 
-    if (nome) linhas.push(`👤 *Nome:* ${nome}`);
-    if (cidade) linhas.push(`📍 *Cidade:* ${cidade}`);
-    if (obs) linhas.push(`📝 *Observações:* ${obs}`);
+    if (nome) linhas.push(`▸ *Nome:* ${nome}`);
+    if (cidade) linhas.push(`▸ *Cidade:* ${cidade}`);
+    if (obs) linhas.push(`▸ *Observações:* ${obs}`);
 
     linhas.push("");
     linhas.push("Aguardo contato para orçamento!");
@@ -281,7 +298,6 @@ export default function AgendaCalendar() {
     return linhas.join("\n");
   }
 
-  // ⚡ NOVA CODIFICAÇÃO: preserva emojis como UTF-8 nativo
   function enviarWhatsApp() {
     const msg = gerarMensagem();
     const textoCodificado = encodeURI(msg)
@@ -301,7 +317,7 @@ export default function AgendaCalendar() {
 
   if (loading) {
     return (
-      <div style={{ padding: "30px", textAlign: "center", opacity: 0.7 }}>
+      <div style={{ padding: "40px", textAlign: "center", opacity: 0.7 }}>
         📅 Carregando agenda...
       </div>
     );
@@ -309,7 +325,7 @@ export default function AgendaCalendar() {
 
   if (error) {
     return (
-      <div style={{ padding: "30px", textAlign: "center", color: "#ef4444" }}>
+      <div style={{ padding: "40px", textAlign: "center", color: "#ef4444" }}>
         {error}
       </div>
     );
@@ -318,14 +334,16 @@ export default function AgendaCalendar() {
   return (
     <div style={{ maxWidth: "700px", margin: "0 auto", width: "100%" }}>
 
-      {/* CALENDÁRIO */}
+      {/* ============ CALENDÁRIO ============ */}
       <div
         style={{
-          padding: "20px",
-          background: "rgba(0,0,0,0.4)",
-          borderRadius: "16px",
-          backdropFilter: "blur(10px)",
-          marginBottom: "20px",
+          padding: "24px",
+          background: "rgba(0,0,0,0.45)",
+          borderRadius: "20px",
+          backdropFilter: "blur(14px)",
+          border: `1px solid ${COR.bordaSuave}`,
+          marginBottom: "24px",
+          boxShadow: "0 10px 40px rgba(0,0,0,0.3)",
         }}
       >
         <div
@@ -333,39 +351,31 @@ export default function AgendaCalendar() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            marginBottom: "20px",
+            marginBottom: "22px",
           }}
         >
           <button
             onClick={mesAnterior}
-            style={{
-              background: "transparent",
-              border: "1px solid rgba(255,255,255,0.3)",
-              color: "#fff",
-              padding: "8px 16px",
-              borderRadius: "8px",
-              cursor: "pointer",
-              fontSize: "18px",
-            }}
+            style={estiloNavCalendario}
           >
             ←
           </button>
 
-          <h3 style={{ margin: 0, fontSize: "20px" }}>
+          <h3
+            style={{
+              margin: 0,
+              fontSize: "20px",
+              fontFamily: "var(--font-cinzel), serif",
+              letterSpacing: "1.5px",
+              color: COR.textoDourado,
+            }}
+          >
             {MESES[mesAtual]} {anoAtual}
           </h3>
 
           <button
             onClick={mesProximo}
-            style={{
-              background: "transparent",
-              border: "1px solid rgba(255,255,255,0.3)",
-              color: "#fff",
-              padding: "8px 16px",
-              borderRadius: "8px",
-              cursor: "pointer",
-              fontSize: "18px",
-            }}
+            style={estiloNavCalendario}
           >
             →
           </button>
@@ -376,7 +386,7 @@ export default function AgendaCalendar() {
             display: "grid",
             gridTemplateColumns: "repeat(7, 1fr)",
             gap: "6px",
-            marginBottom: "8px",
+            marginBottom: "10px",
           }}
         >
           {DIAS_SEMANA.map((d) => (
@@ -384,9 +394,12 @@ export default function AgendaCalendar() {
               key={d}
               style={{
                 textAlign: "center",
-                fontSize: "12px",
-                opacity: 0.6,
+                fontSize: "11px",
+                opacity: 0.55,
                 fontWeight: "600",
+                letterSpacing: "1.5px",
+                fontFamily: "var(--font-cinzel), serif",
+                textTransform: "uppercase",
               }}
             >
               {d}
@@ -421,6 +434,7 @@ export default function AgendaCalendar() {
             let background;
             let color;
             let opacity = 1;
+            let border = "none";
 
             if (passado) {
               background = "rgba(255,255,255,0.03)";
@@ -431,10 +445,11 @@ export default function AgendaCalendar() {
               color = "rgba(255,255,255,0.25)";
               opacity = 0.5;
             } else if (isSelecionado) {
-              background = "#f5d76e";
-              color = "#000";
+              background = `linear-gradient(135deg, ${COR.douradoClaro}, ${COR.dourado})`;
+              color = "#111";
+              border = "2px solid #fff";
             } else {
-              background = "#22c55e";
+              background = COR.verde;
               color = "#000";
             }
 
@@ -448,14 +463,14 @@ export default function AgendaCalendar() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  borderRadius: "8px",
+                  borderRadius: "10px",
                   fontSize: "14px",
                   fontWeight: "600",
                   background,
                   color,
-                  border: isSelecionado ? "2px solid #fff" : "none",
+                  border,
                   cursor: clicavel ? "pointer" : "not-allowed",
-                  transition: "all 0.2s",
+                  transition: "all 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
                   opacity,
                 }}
               >
@@ -470,7 +485,7 @@ export default function AgendaCalendar() {
                       right: "-2px",
                       fontSize: "10px",
                       fontWeight: "900",
-                      background: "#22c55e",
+                      background: COR.verde,
                       color: "#fff",
                       borderRadius: "50%",
                       width: "14px",
@@ -496,8 +511,8 @@ export default function AgendaCalendar() {
                       width: "8px",
                       height: "8px",
                       borderRadius: "50%",
-                      background: "#f5d76e",
-                      boxShadow: "0 0 4px rgba(245,215,110,0.8)",
+                      background: COR.douradoClaro,
+                      boxShadow: `0 0 4px ${COR.douradoClaro}`,
                     }}
                   />
                 )}
@@ -506,24 +521,24 @@ export default function AgendaCalendar() {
           })}
         </div>
 
-        {/* LEGENDA */}
         <div
           style={{
             display: "flex",
             justifyContent: "center",
             gap: "14px",
-            marginTop: "20px",
+            marginTop: "22px",
             fontSize: "11px",
             flexWrap: "wrap",
+            letterSpacing: "0.5px",
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            <span style={{ width: "14px", height: "14px", borderRadius: "4px", background: "#22c55e", display: "inline-block" }} />
+            <span style={{ width: "14px", height: "14px", borderRadius: "4px", background: COR.verde, display: "inline-block" }} />
             Livre
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            <span style={{ position: "relative", width: "14px", height: "14px", borderRadius: "4px", background: "#22c55e", display: "inline-block" }}>
-              <span style={{ position: "absolute", top: "1px", right: "1px", width: "5px", height: "5px", borderRadius: "50%", background: "#f5d76e" }} />
+            <span style={{ position: "relative", width: "14px", height: "14px", borderRadius: "4px", background: COR.verde, display: "inline-block" }}>
+              <span style={{ position: "absolute", top: "1px", right: "1px", width: "5px", height: "5px", borderRadius: "50%", background: COR.douradoClaro }} />
             </span>
             Já tem evento
           </div>
@@ -532,12 +547,12 @@ export default function AgendaCalendar() {
             Sem vaga
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            <span style={{ width: "14px", height: "14px", borderRadius: "4px", background: "#f5d76e", display: "inline-block" }} />
+            <span style={{ width: "14px", height: "14px", borderRadius: "4px", background: `linear-gradient(135deg, ${COR.douradoClaro}, ${COR.dourado})`, display: "inline-block" }} />
             Selecionado
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
             <span style={{ position: "relative", width: "14px", height: "14px", borderRadius: "4px", background: "rgba(255,255,255,0.03)", display: "inline-block" }}>
-              <span style={{ position: "absolute", top: "-3px", right: "-3px", fontSize: "9px", fontWeight: "900", background: "#22c55e", color: "#fff", borderRadius: "50%", width: "11px", height: "11px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <span style={{ position: "absolute", top: "-3px", right: "-3px", fontSize: "9px", fontWeight: "900", background: COR.verde, color: "#fff", borderRadius: "50%", width: "11px", height: "11px", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 ✓
               </span>
             </span>
@@ -549,31 +564,43 @@ export default function AgendaCalendar() {
           style={{
             textAlign: "center",
             fontSize: "11px",
-            opacity: 0.6,
-            marginTop: "15px",
+            opacity: 0.55,
+            marginTop: "18px",
             fontStyle: "italic",
+            letterSpacing: "0.5px",
           }}
         >
-          👆 Selecione uma data para ver as opções de contratação
+          Toque em uma data para ver as opções de contratação
         </p>
       </div>
 
-      {/* FORMULÁRIO */}
+      {/* ============ FORMULÁRIO ============ */}
       {dataSelecionada && (
         <div
           style={{
-            padding: "25px",
+            padding: "28px",
             background: "rgba(0,0,0,0.5)",
-            borderRadius: "16px",
-            backdropFilter: "blur(10px)",
-            border: "1px solid rgba(245,215,110,0.3)",
+            borderRadius: "20px",
+            backdropFilter: "blur(14px)",
+            border: `1px solid ${COR.bordaDourada}`,
+            boxShadow: "0 15px 50px rgba(0,0,0,0.35)",
           }}
         >
-          <h3 style={{ textAlign: "center", marginBottom: "25px", color: "#f5d76e", fontSize: "18px" }}>
-            📅 {formatarDataBR(dataSelecionada)}
+          <h3
+            style={{
+              textAlign: "center",
+              marginBottom: "30px",
+              color: COR.textoDourado,
+              fontSize: "18px",
+              fontFamily: "var(--font-cinzel), serif",
+              letterSpacing: "2px",
+            }}
+          >
+            {formatarDataBR(dataSelecionada)}
           </h3>
 
-          <div ref={secaoEventoRef} style={{ marginBottom: "25px", scrollMarginTop: "20px" }}>
+          {/* ETAPA 1: TIPO DE EVENTO */}
+          <div ref={secaoEventoRef} style={{ marginBottom: "28px", scrollMarginTop: "20px" }}>
             <h4 style={estiloTituloEtapa}>1. Que tipo de evento?</h4>
             <div style={estiloGridCards}>
               {TIPOS_EVENTO.map((t) => (
@@ -594,48 +621,92 @@ export default function AgendaCalendar() {
             </div>
           </div>
 
+          {/* ETAPA 2: PACOTE */}
           {eventoUsaPacote() && (
-            <div ref={secaoPacoteRef} style={{ marginBottom: "25px", scrollMarginTop: "20px" }}>
+            <div ref={secaoPacoteRef} style={{ marginBottom: "28px", scrollMarginTop: "20px" }}>
               <h4 style={estiloTituloEtapa}>2. Escolha o pacote</h4>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "12px" }}>
-                {PACOTES_ESPECIAIS.map((p) => (
-                  <div
-                    key={p.id}
-                    onClick={() => setPacote(p.id)}
-                    style={{
-                      padding: "18px",
-                      borderRadius: "12px",
-                      background: pacote === p.id ? "rgba(245,215,110,0.15)" : "rgba(255,255,255,0.05)",
-                      border: pacote === p.id ? "2px solid #f5d76e" : "1px solid rgba(255,255,255,0.1)",
-                      cursor: "pointer",
-                      transition: "all 0.2s",
-                      textAlign: "left",
-                    }}
-                  >
-                    <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "10px" }}>
-                      <span style={{ fontSize: "28px" }}>{p.emoji}</span>
-                      <div>
-                        <div style={{ fontSize: "18px", fontWeight: "800", letterSpacing: "1px" }}>{p.nome}</div>
-                        <div style={{ fontSize: "12px", opacity: 0.7, fontStyle: "italic" }}>{p.subtitulo}</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "14px" }}>
+                {PACOTES_ESPECIAIS.map((p) => {
+                  const sel = pacote === p.id;
+                  return (
+                    <div
+                      key={p.id}
+                      onClick={() => setPacote(p.id)}
+                      style={{
+                        padding: "20px",
+                        borderRadius: "16px",
+                        background: sel ? COR.bgCardSelecionado : COR.bgCard,
+                        border: sel ? `2px solid ${COR.douradoClaro}` : `1px solid ${COR.bordaSuave}`,
+                        cursor: "pointer",
+                        transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+                        textAlign: "left",
+                        boxShadow: sel ? `0 0 30px rgba(245,215,110,0.2)` : "none",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "14px",
+                          marginBottom: "12px",
+                        }}
+                      >
+                        <span style={{ fontSize: "30px" }}>{p.emoji}</span>
+                        <div>
+                          <div
+                            style={{
+                              fontSize: "18px",
+                              fontWeight: "800",
+                              letterSpacing: "2px",
+                              fontFamily: "var(--font-cinzel), serif",
+                              color: sel ? COR.douradoClaro : "#fff",
+                            }}
+                          >
+                            {p.nome}
+                          </div>
+                          <div
+                            style={{
+                              fontSize: "12px",
+                              opacity: 0.7,
+                              fontStyle: "italic",
+                              marginTop: "2px",
+                            }}
+                          >
+                            {p.subtitulo}
+                          </div>
+                        </div>
                       </div>
+                      <ul
+                        style={{
+                          margin: 0,
+                          paddingLeft: "20px",
+                          fontSize: "13px",
+                          lineHeight: "1.8",
+                          opacity: 0.9,
+                        }}
+                      >
+                        {p.itens.map((item, i) => (
+                          <li key={i}>{item}</li>
+                        ))}
+                      </ul>
                     </div>
-                    <ul style={{ margin: 0, paddingLeft: "20px", fontSize: "13px", lineHeight: "1.7", opacity: 0.9 }}>
-                      {p.itens.map((item, i) => (
-                        <li key={i}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}
 
+          {/* ETAPA 2: FORMAÇÃO */}
           {tipoEvento && !eventoUsaPacote() && (
-            <div ref={secaoPacoteRef} style={{ marginBottom: "25px", scrollMarginTop: "20px" }}>
+            <div ref={secaoPacoteRef} style={{ marginBottom: "28px", scrollMarginTop: "20px" }}>
               <h4 style={estiloTituloEtapa}>2. Escolha a formação</h4>
               <div style={estiloGridCards}>
                 {FORMACOES.map((f) => (
-                  <div key={f.id} onClick={() => setFormacao(f.id)} style={estiloCard(formacao === f.id)}>
+                  <div
+                    key={f.id}
+                    onClick={() => setFormacao(f.id)}
+                    style={estiloCard(formacao === f.id)}
+                  >
                     <div style={estiloCardEmoji}>{f.emoji}</div>
                     <div style={estiloCardNome}>{f.nome}</div>
                     <div style={estiloCardDesc}>{f.desc}</div>
@@ -645,10 +716,17 @@ export default function AgendaCalendar() {
             </div>
           )}
 
+          {/* ETAPA 3: HORÁRIO */}
           {tipoEvento && (eventoUsaPacote() ? pacote : formacao) && (
-            <div ref={secaoHorarioRef} style={{ marginBottom: "25px", scrollMarginTop: "20px" }}>
+            <div ref={secaoHorarioRef} style={{ marginBottom: "28px", scrollMarginTop: "20px" }}>
               <h4 style={estiloTituloEtapa}>3. Escolha o horário</h4>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(70px, 1fr))", gap: "8px" }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fill, minmax(72px, 1fr))",
+                  gap: "10px",
+                }}
+              >
                 {HORARIOS.map((h) => {
                   const bloqueado = horarioBloqueado(dataSelecionada, h);
                   const sel = horario === h;
@@ -657,17 +735,31 @@ export default function AgendaCalendar() {
                       key={h}
                       onClick={() => !bloqueado && setHorario(h)}
                       style={{
-                        padding: "10px 6px",
+                        padding: "12px 6px",
                         textAlign: "center",
-                        borderRadius: "8px",
+                        borderRadius: "10px",
                         fontSize: "13px",
                         fontWeight: "600",
-                        background: bloqueado ? "rgba(255,255,255,0.05)" : sel ? "#f5d76e" : "#22c55e",
-                        color: bloqueado ? "rgba(255,255,255,0.25)" : "#000",
-                        border: sel ? "2px solid #fff" : "none",
+                        letterSpacing: "0.5px",
+                        background: bloqueado
+                          ? "rgba(255,255,255,0.04)"
+                          : sel
+                          ? `linear-gradient(135deg, ${COR.douradoClaro}, ${COR.dourado})`
+                          : COR.bgCard,
+                        color: bloqueado
+                          ? "rgba(255,255,255,0.25)"
+                          : sel
+                          ? "#111"
+                          : COR.douradoClaro,
+                        border: bloqueado
+                          ? `1px solid rgba(255,255,255,0.06)`
+                          : sel
+                          ? "2px solid #fff"
+                          : `1px solid ${COR.bordaDourada}`,
                         cursor: bloqueado ? "not-allowed" : "pointer",
-                        transition: "all 0.2s",
+                        transition: "all 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
                         opacity: bloqueado ? 0.5 : 1,
+                        boxShadow: sel ? `0 0 25px rgba(245,215,110,0.35)` : "none",
                       }}
                     >
                       {h}
@@ -675,23 +767,52 @@ export default function AgendaCalendar() {
                   );
                 })}
               </div>
-              <p style={{ fontSize: "11px", opacity: 0.6, marginTop: "12px", textAlign: "center", lineHeight: "1.5" }}>
-                ⚠️ Cada reserva ocupa {DURACAO_HORAS}h (show + logística)
+              <p
+                style={{
+                  fontSize: "11px",
+                  opacity: 0.55,
+                  marginTop: "14px",
+                  textAlign: "center",
+                  lineHeight: "1.6",
+                  letterSpacing: "0.5px",
+                }}
+              >
+                Cada reserva ocupa {DURACAO_HORAS}h (show + logística)
               </p>
             </div>
           )}
 
+          {/* ETAPA 4: DADOS */}
           {horario && (
-            <div ref={secaoDadosRef} style={{ marginBottom: "25px", scrollMarginTop: "20px" }}>
+            <div ref={secaoDadosRef} style={{ marginBottom: "28px", scrollMarginTop: "20px" }}>
               <h4 style={estiloTituloEtapa}>4. Seus dados</h4>
-              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                <input type="text" placeholder="Seu nome *" value={nome} onChange={(e) => setNome(e.target.value)} style={estiloInput} />
-                <input type="text" placeholder="Cidade / Estado *" value={cidade} onChange={(e) => setCidade(e.target.value)} style={estiloInput} />
-                <textarea placeholder="Observações (opcional)" value={obs} onChange={(e) => setObs(e.target.value)} rows={3} style={{ ...estiloInput, resize: "vertical" }} />
+              <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+                <input
+                  type="text"
+                  placeholder="Seu nome *"
+                  value={nome}
+                  onChange={(e) => setNome(e.target.value)}
+                  style={estiloInput}
+                />
+                <input
+                  type="text"
+                  placeholder="Cidade / Estado *"
+                  value={cidade}
+                  onChange={(e) => setCidade(e.target.value)}
+                  style={estiloInput}
+                />
+                <textarea
+                  placeholder="Observações (opcional)"
+                  value={obs}
+                  onChange={(e) => setObs(e.target.value)}
+                  rows={3}
+                  style={{ ...estiloInput, resize: "vertical" }}
+                />
               </div>
             </div>
           )}
 
+          {/* ETAPA 5: BOTÃO ENVIAR */}
           {horario && (
             <button
               onClick={enviarWhatsApp}
@@ -699,15 +820,22 @@ export default function AgendaCalendar() {
               style={{
                 width: "100%",
                 padding: "18px",
-                fontSize: "16px",
-                fontWeight: "800",
-                letterSpacing: "1px",
-                borderRadius: "12px",
+                fontSize: "15px",
+                fontWeight: "700",
+                letterSpacing: "1.5px",
+                borderRadius: "14px",
                 border: "none",
                 cursor: podeEnviar ? "pointer" : "not-allowed",
-                background: podeEnviar ? "#25D366" : "rgba(255,255,255,0.1)",
+                background: podeEnviar
+                  ? "linear-gradient(135deg, #25D366, #128C7E)"
+                  : "rgba(255,255,255,0.08)",
                 color: podeEnviar ? "#fff" : "rgba(255,255,255,0.4)",
-                transition: "all 0.2s",
+                transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+                boxShadow: podeEnviar
+                  ? "0 8px 30px rgba(37,211,102,0.35)"
+                  : "none",
+                fontFamily: "var(--font-inter), sans-serif",
+                textTransform: "uppercase",
               }}
             >
               💬 Enviar para WhatsApp
@@ -719,43 +847,40 @@ export default function AgendaCalendar() {
   );
 }
 
-const estiloTituloEtapa = {
-  fontSize: "14px",
-  fontWeight: "700",
-  marginBottom: "12px",
-  letterSpacing: "1px",
+// ============ ESTILOS REUTILIZÁVEIS ============
+
+const estiloNavCalendario = {
+  background: "transparent",
+  border: `1px solid rgba(245,215,110,0.3)`,
   color: "#f5d76e",
+  padding: "8px 18px",
+  borderRadius: "10px",
+  cursor: "pointer",
+  fontSize: "16px",
+  transition: "all 0.3s ease",
+};
+
+const estiloTituloEtapa = {
+  fontSize: "13px",
+  fontWeight: "700",
+  marginBottom: "14px",
+  letterSpacing: "2px",
+  color: "#f5d76e",
+  fontFamily: "var(--font-cinzel), serif",
+  textTransform: "uppercase",
 };
 
 const estiloGridCards = {
   display: "grid",
   gridTemplateColumns: "repeat(auto-fill, minmax(130px, 1fr))",
-  gap: "10px",
+  gap: "12px",
 };
 
 function estiloCard(selecionado) {
   return {
-    padding: "16px 10px",
-    borderRadius: "12px",
-    background: selecionado ? "rgba(245,215,110,0.15)" : "rgba(255,255,255,0.05)",
-    border: selecionado ? "2px solid #f5d76e" : "1px solid rgba(255,255,255,0.1)",
-    cursor: "pointer",
-    transition: "all 0.2s",
-    textAlign: "center",
-  };
-}
-
-const estiloCardEmoji = { fontSize: "30px", marginBottom: "8px" };
-const estiloCardNome = { fontSize: "14px", fontWeight: "700", marginBottom: "4px", lineHeight: "1.2" };
-const estiloCardDesc = { fontSize: "11px", opacity: 0.7, lineHeight: "1.3" };
-
-const estiloInput = {
-  padding: "14px",
-  borderRadius: "10px",
-  border: "1px solid rgba(255,255,255,0.15)",
-  background: "rgba(0,0,0,0.3)",
-  color: "#fff",
-  fontSize: "14px",
-  outline: "none",
-  fontFamily: "inherit",
-};
+    padding: "18px 12px",
+    borderRadius: "14px",
+    background: selecionado ? "rgba(245,215,110,0.18)" : "rgba(245,215,110,0.04)",
+    border: selecionado
+      ? "2px solid #f5d76e"
+      : "1px solid rgba(255,255
