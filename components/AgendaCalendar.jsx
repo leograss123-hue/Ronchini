@@ -22,12 +22,12 @@ const DURACAO_HORAS = 4;
 
 const TIPOS_EVENTO = [
   { id: "casamento", emoji: "💍", nome: "Casamento", desc: "Cerimônia e recepção" },
+  { id: "formatura", emoji: "🎓", nome: "Formatura", desc: "Colações e festas" },
+  { id: "publico", emoji: "🏛", nome: "Evento Público", desc: "Prefeituras e festivais" },
   { id: "aniversario", emoji: "🎉", nome: "Aniversário", desc: "Festas e comemorações" },
   { id: "corporativo", emoji: "🏢", nome: "Corporativo", desc: "Empresas e eventos" },
   { id: "confraternizacao", emoji: "🍻", nome: "Confraternização", desc: "Encontros e festas" },
   { id: "particular", emoji: "🎊", nome: "Evento Particular", desc: "Eventos privados" },
-  { id: "publico", emoji: "🏛", nome: "Evento Público", desc: "Prefeituras e festivais" },
-  { id: "formatura", emoji: "🎓", nome: "Formatura", desc: "Colações e festas" },
 ];
 
 const FORMACOES = [
@@ -38,7 +38,8 @@ const FORMACOES = [
   { id: "banda_com_luz", emoji: "🎤", nome: "Banda Completa", desc: "Com luz e som" },
 ];
 
-const PACOTES_CASAMENTO = [
+// Pacotes usados para Casamento, Formatura e Evento Público
+const PACOTES_ESPECIAIS = [
   {
     id: "standard",
     emoji: "💎",
@@ -75,6 +76,9 @@ const PACOTES_CASAMENTO = [
     ],
   },
 ];
+
+// Eventos que usam os pacotes especiais
+const EVENTOS_COM_PACOTE = ["casamento", "formatura", "publico"];
 
 export default function AgendaCalendar() {
   const [agenda, setAgenda] = useState({});
@@ -173,6 +177,11 @@ export default function AgendaCalendar() {
     return HORARIOS.some((h) => !horarioBloqueado(dataStr, h));
   }
 
+  // Verifica se algum horário do dia está ocupado (pra sinalizar)
+  function diaTemEvento(dataStr) {
+    return HORARIOS.some((h) => horarioBloqueado(dataStr, h));
+  }
+
   function gerarDias() {
     const primeiroDia = new Date(anoAtual, mesAtual, 1).getDay();
     const totalDias = new Date(anoAtual, mesAtual + 1, 0).getDate();
@@ -199,6 +208,10 @@ export default function AgendaCalendar() {
     resetarSelecoes();
   }
 
+  function eventoUsaPacote() {
+    return EVENTOS_COM_PACOTE.includes(tipoEvento);
+  }
+
   function gerarMensagem() {
     if (!dataSelecionada || !tipoEvento || !horario) return "";
 
@@ -211,8 +224,8 @@ export default function AgendaCalendar() {
     linhas.push(`🕐 Horário: ${horario}`);
     linhas.push(`🎉 Tipo de evento: ${tipo?.nome || ""}`);
 
-    if (tipoEvento === "casamento") {
-      const pac = PACOTES_CASAMENTO.find((p) => p.id === pacote);
+    if (eventoUsaPacote()) {
+      const pac = PACOTES_ESPECIAIS.find((p) => p.id === pacote);
       if (pac) linhas.push(`💎 Pacote: ${pac.nome}`);
     } else {
       const form = FORMACOES.find((f) => f.id === formacao);
@@ -241,7 +254,7 @@ export default function AgendaCalendar() {
     horario &&
     nome.trim() !== "" &&
     cidade.trim() !== "" &&
-    (tipoEvento === "casamento" ? !!pacote : !!formacao);
+    (eventoUsaPacote() ? !!pacote : !!formacao);
 
   if (loading) {
     return (
@@ -352,6 +365,7 @@ export default function AgendaCalendar() {
 
             const dataStr = formatarData(dia);
             const temLivre = diaTemAlgumLivre(dataStr);
+            const temEvento = diaTemEvento(dataStr);
             const isSelecionado = dataSelecionada === dataStr;
 
             return (
@@ -359,6 +373,7 @@ export default function AgendaCalendar() {
                 key={dia}
                 onClick={() => selecionarDia(dia)}
                 style={{
+                  position: "relative",
                   aspectRatio: "1",
                   display: "flex",
                   alignItems: "center",
@@ -371,18 +386,29 @@ export default function AgendaCalendar() {
                     : isSelecionado
                     ? "#f5d76e"
                     : "#22c55e",
-                  color: !temLivre
-                    ? "rgba(255,255,255,0.25)"
-                    : "#000",
-                  border: isSelecionado
-                    ? "2px solid #fff"
-                    : "none",
+                  color: !temLivre ? "rgba(255,255,255,0.25)" : "#000",
+                  border: isSelecionado ? "2px solid #fff" : "none",
                   cursor: temLivre ? "pointer" : "not-allowed",
                   transition: "all 0.2s",
                   opacity: temLivre ? 1 : 0.5,
                 }}
               >
                 {dia}
+                {temLivre && temEvento && !isSelecionado && (
+                  <span
+                    title="Este dia já tem evento marcado"
+                    style={{
+                      position: "absolute",
+                      top: "4px",
+                      right: "4px",
+                      width: "8px",
+                      height: "8px",
+                      borderRadius: "50%",
+                      background: "#f5d76e",
+                      boxShadow: "0 0 4px rgba(245,215,110,0.8)",
+                    }}
+                  />
+                )}
               </div>
             );
           })}
@@ -392,9 +418,9 @@ export default function AgendaCalendar() {
           style={{
             display: "flex",
             justifyContent: "center",
-            gap: "20px",
+            gap: "16px",
             marginTop: "20px",
-            fontSize: "12px",
+            fontSize: "11px",
             flexWrap: "wrap",
           }}
         >
@@ -408,7 +434,32 @@ export default function AgendaCalendar() {
                 display: "inline-block",
               }}
             />
-            Disponível
+            Livre
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <span
+              style={{
+                position: "relative",
+                width: "14px",
+                height: "14px",
+                borderRadius: "4px",
+                background: "#22c55e",
+                display: "inline-block",
+              }}
+            >
+              <span
+                style={{
+                  position: "absolute",
+                  top: "1px",
+                  right: "1px",
+                  width: "5px",
+                  height: "5px",
+                  borderRadius: "50%",
+                  background: "#f5d76e",
+                }}
+              />
+            </span>
+            Já tem evento
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
             <span
@@ -420,7 +471,7 @@ export default function AgendaCalendar() {
                 display: "inline-block",
               }}
             />
-            Indisponível
+            Sem vaga
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
             <span
@@ -481,8 +532,8 @@ export default function AgendaCalendar() {
             </div>
           </div>
 
-          {/* ETAPA 2: PACOTE (só casamento) */}
-          {tipoEvento === "casamento" && (
+          {/* ETAPA 2: PACOTE (casamento, formatura, evento público) */}
+          {eventoUsaPacote() && (
             <div style={{ marginBottom: "25px" }}>
               <h4 style={estiloTituloEtapa}>2. Escolha o pacote</h4>
               <div
@@ -492,7 +543,7 @@ export default function AgendaCalendar() {
                   gap: "12px",
                 }}
               >
-                {PACOTES_CASAMENTO.map((p) => (
+                {PACOTES_ESPECIAIS.map((p) => (
                   <div
                     key={p.id}
                     onClick={() => setPacote(p.id)}
@@ -562,7 +613,7 @@ export default function AgendaCalendar() {
           )}
 
           {/* ETAPA 2: FORMAÇÃO (outros eventos) */}
-          {tipoEvento && tipoEvento !== "casamento" && (
+          {tipoEvento && !eventoUsaPacote() && (
             <div style={{ marginBottom: "25px" }}>
               <h4 style={estiloTituloEtapa}>2. Escolha a formação</h4>
               <div style={estiloGridCards}>
@@ -582,62 +633,59 @@ export default function AgendaCalendar() {
           )}
 
           {/* ETAPA 3: HORÁRIO */}
-          {tipoEvento &&
-            (tipoEvento === "casamento" ? pacote : formacao) && (
-              <div style={{ marginBottom: "25px" }}>
-                <h4 style={estiloTituloEtapa}>3. Escolha o horário</h4>
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fill, minmax(70px, 1fr))",
-                    gap: "8px",
-                  }}
-                >
-                  {HORARIOS.map((h) => {
-                    const bloqueado = horarioBloqueado(dataSelecionada, h);
-                    const sel = horario === h;
-                    return (
-                      <div
-                        key={h}
-                        onClick={() => !bloqueado && setHorario(h)}
-                        style={{
-                          padding: "10px 6px",
-                          textAlign: "center",
-                          borderRadius: "8px",
-                          fontSize: "13px",
-                          fontWeight: "600",
-                          background: bloqueado
-                            ? "rgba(255,255,255,0.05)"
-                            : sel
-                            ? "#f5d76e"
-                            : "#22c55e",
-                          color: bloqueado
-                            ? "rgba(255,255,255,0.25)"
-                            : "#000",
-                          border: sel ? "2px solid #fff" : "none",
-                          cursor: bloqueado ? "not-allowed" : "pointer",
-                          transition: "all 0.2s",
-                          opacity: bloqueado ? 0.5 : 1,
-                        }}
-                      >
-                        {h}
-                      </div>
-                    );
-                  })}
-                </div>
-                <p
-                  style={{
-                    fontSize: "11px",
-                    opacity: 0.6,
-                    marginTop: "12px",
-                    textAlign: "center",
-                    lineHeight: "1.5",
-                  }}
-                >
-                  ⚠️ Cada reserva ocupa {DURACAO_HORAS}h (show + logística)
-                </p>
+          {tipoEvento && (eventoUsaPacote() ? pacote : formacao) && (
+            <div style={{ marginBottom: "25px" }}>
+              <h4 style={estiloTituloEtapa}>3. Escolha o horário</h4>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fill, minmax(70px, 1fr))",
+                  gap: "8px",
+                }}
+              >
+                {HORARIOS.map((h) => {
+                  const bloqueado = horarioBloqueado(dataSelecionada, h);
+                  const sel = horario === h;
+                  return (
+                    <div
+                      key={h}
+                      onClick={() => !bloqueado && setHorario(h)}
+                      style={{
+                        padding: "10px 6px",
+                        textAlign: "center",
+                        borderRadius: "8px",
+                        fontSize: "13px",
+                        fontWeight: "600",
+                        background: bloqueado
+                          ? "rgba(255,255,255,0.05)"
+                          : sel
+                          ? "#f5d76e"
+                          : "#22c55e",
+                        color: bloqueado ? "rgba(255,255,255,0.25)" : "#000",
+                        border: sel ? "2px solid #fff" : "none",
+                        cursor: bloqueado ? "not-allowed" : "pointer",
+                        transition: "all 0.2s",
+                        opacity: bloqueado ? 0.5 : 1,
+                      }}
+                    >
+                      {h}
+                    </div>
+                  );
+                })}
               </div>
-            )}
+              <p
+                style={{
+                  fontSize: "11px",
+                  opacity: 0.6,
+                  marginTop: "12px",
+                  textAlign: "center",
+                  lineHeight: "1.5",
+                }}
+              >
+                ⚠️ Cada reserva ocupa {DURACAO_HORAS}h (show + logística)
+              </p>
+            </div>
+          )}
 
           {/* ETAPA 4: DADOS */}
           {horario && (
