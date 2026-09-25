@@ -81,90 +81,6 @@ export default function Home() {
           <Hero />
 
           <Buttons goToScene={goToScene} />
-
-        </div>
-      )}
-
-      {/* 🍻 SELEÇÃO COM MODÃO */}
-      {scene === "selecao" && (
-        <div className="scene">
-
-          <h2
-            style={{
-              fontSize: "clamp(32px, 4vw, 52px)",
-              marginBottom: "30px",
-              marginTop: "-120px",
-              textAlign: "center",
-              fontWeight: "800",
-              letterSpacing: "2px",
-            }}
-          >
-            🍻 Seleção com Modão 🍻
-          </h2>
-
-          <p
-            style={{
-              maxWidth: "520px",
-              textAlign: "center",
-              lineHeight: "1.8",
-              padding: "0 20px",
-            }}
-          >
-            Andradas foi escalada.
-            <br />
-            A Seleção foi convocada.
-            <br />
-            O dia 19 foi show — e não foi só de futebol.
-            <br />
-            <br />
-            Acompanhe nossos perfis e fique por dentro dos próximos eventos.
-          </p>
-
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "12px",
-              marginTop: "20px",
-            }}
-          >
-            <a
-              href="https://www.instagram.com/selecaocommodao"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="socialCard"
-            >
-              📸 @selecaocommodao
-            </a>
-
-            <a
-              href="https://www.instagram.com/ronchinioficial/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="socialCard"
-            >
-              🎤 @ronchinioficial
-            </a>
-          </div>
-
-          <p
-            style={{
-              marginTop: "28px",
-              color: "#f5d76e",
-              fontWeight: "700",
-              letterSpacing: "1px",
-            }}
-          >
-            Ingressos esgotados
-          </p>
-
-          <button
-            className="back"
-            onClick={() => goToScene("home")}
-          >
-            Voltar
-          </button>
-
         </div>
       )}
 
@@ -200,95 +116,6 @@ export default function Home() {
             >
               Voltar
             </button>
-          </div>
-        </div>
-      )}
-
-      {/* 💰 SIMULAR CONTRATAÇÃO */}
-      {scene === "simulador" && (
-        <div
-          className="scene"
-          style={{
-            overflowY: "auto",
-            padding: "80px 20px",
-            justifyContent: "flex-start",
-          }}
-        >
-          <div
-            style={{
-              maxWidth: "900px",
-              width: "100%",
-              textAlign: "center",
-            }}
-          >
-            <h1
-              style={{
-                fontSize: "clamp(38px,6vw,70px)",
-                marginBottom: "10px",
-              }}
-            >
-              💰 Simular Contratação
-            </h1>
-
-            <p
-              style={{
-                opacity: 0.8,
-                marginBottom: "50px",
-                fontSize: "18px",
-              }}
-            >
-              Escolha o formato ideal para o seu evento.
-            </p>
-
-            <div className="contractGrid">
-
-              <div className="contractCard">
-                <h2>🍻 Seleção com Modão</h2>
-
-                <p>
-                  O projeto que transforma o público em protagonista.
-                </p>
-
-                <button className="ticket">
-                  Conhecer formato
-                </button>
-              </div>
-
-              <div className="contractCard">
-                <h2>🎤 Ronchini Acústico</h2>
-
-                <p>
-                  Shows intimistas para bares, casamentos e eventos particulares.
-                </p>
-
-                <button className="ticket">
-                  Conhecer formato
-                </button>
-              </div>
-
-              <div className="contractCard">
-                <h2>🏛 Eventos Públicos</h2>
-
-                <p>
-                  Contratações para prefeituras e eventos oficiais.
-                </p>
-
-                <button className="ticket">
-                  Conhecer formato
-                </button>
-              </div>
-
-            </div>
-
-            <br />
-
-            <button
-              className="back"
-              onClick={() => goToScene("home")}
-            >
-              Voltar
-            </button>
-
           </div>
         </div>
       )}
@@ -438,7 +265,7 @@ export default function Home() {
 
             <br />
 
-            <h2>🍻 Seleção com Modão</h2>
+            <h2>🎤 A essência do Ronchini</h2>
 
             <p
               style={{
@@ -446,33 +273,22 @@ export default function Home() {
                 opacity: 0.9,
               }}
             >
-              O projeto Seleção com Modão nasceu para reunir pessoas
-              através das músicas que marcaram suas histórias.
-              Mais do que um show, é uma experiência onde o público
-              se transforma em parte do espetáculo.
+              Unimos a tradição da viola caipira à energia do público
+              contemporâneo. Cada show é construído pra emocionar —
+              repertório selecionado, arranjos únicos, conexão real com
+              quem está na plateia.
             </p>
 
-            <br />
-
-            <div
+            <p
               style={{
-                display: "flex",
-                justifyContent: "center",
+                lineHeight: "1.8",
+                opacity: 0.9,
                 marginTop: "20px",
               }}
             >
-              <button
-                className="ticket"
-                onClick={() =>
-                  window.open(
-                    "https://wa.me/5535991538017?text=Olá!%20Gostaria%20de%20levar%20o%20evento%20Seleção%20com%20Modão%20para%20a%20minha%20cidade.",
-                    "_blank"
-                  )
-                }
-              >
-                💬 Levar para minha cidade
-              </button>
-            </div>
+              Nosso compromisso é transformar o seu evento em uma
+              memória extraordinária.
+            </p>
 
             <br />
             <br />
@@ -485,18 +301,6 @@ export default function Home() {
             </button>
 
           </div>
-        </div>
-      )}
-
-      {/* 🎧 SPOTIFY */}
-      {scene === "spotify" && (
-        <div className="scene">
-          <h2>🎧 Spotify</h2>
-          <p>Ouça o repertório do Ronchini</p>
-
-          <button className="back" onClick={() => goToScene("home")}>
-            Voltar
-          </button>
         </div>
       )}
 
