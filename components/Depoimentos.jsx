@@ -1,8 +1,13 @@
 "use client";
 
-export default function Depoimentos() {
+export default function Depoimentos({ layout = "coluna" }) {
+  const gridColunas =
+    layout === "coluna"
+      ? "1fr"
+      : "repeat(auto-fit, minmax(300px, 1fr))";
+
   return (
-    <div style={{ marginTop: "60px", width: "100%" }}>
+    <div style={{ marginTop: "10px", width: "100%" }}>
       {/* TÍTULO DA SEÇÃO */}
       <div style={{ textAlign: "center", marginBottom: "30px" }}>
         <div
@@ -47,9 +52,9 @@ export default function Depoimentos() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+          gridTemplateColumns: gridColunas,
           gap: "24px",
-          maxWidth: "720px",
+          maxWidth: layout === "coluna" ? "480px" : "720px",
           margin: "0 auto",
         }}
       >
@@ -162,7 +167,6 @@ function PrintWhatsApp({ nome, mensagens }) {
           ‹
         </span>
 
-        {/* Avatar neutro, sem iniciais coloridas */}
         <div
           style={{
             width: "32px",
@@ -247,7 +251,6 @@ function PrintWhatsApp({ nome, mensagens }) {
 // COMPONENTE: Balão de mensagem
 // ============================================
 function BalãoMensagem({ lado, texto, hora }) {
-  // Sistema (Hoje/Ontem)
   if (lado === "sistema") {
     return (
       <div style={{ textAlign: "center", margin: "4px 0 6px" }}>
