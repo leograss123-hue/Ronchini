@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import Hero from "../components/Hero";
 import Buttons from "../components/Buttons";
 import SoundButton from "../components/SoundButton";
+import AgendaCalendar from "../components/AgendaCalendar";
 
 export default function Home() {
   const videoRef = useRef(null);
@@ -169,43 +170,37 @@ export default function Home() {
 
       {/* 🎟 CONTRATAR */}
       {scene === "contratar" && (
-        <div className="scene">
-          <h2>🎸 Contrate o Ronchini</h2>
-          <p style={{ marginBottom: "30px", opacity: 0.8 }}>
-            Vamos montar o show ideal para o seu evento.
-          </p>
+        <div
+          className="scene"
+          style={{
+            overflowY: "auto",
+            padding: "80px 20px",
+            justifyContent: "flex-start",
+          }}
+        >
+          <div style={{ maxWidth: "700px", width: "100%", textAlign: "center" }}>
+            <h2
+              style={{
+                fontSize: "clamp(28px, 4vw, 48px)",
+                marginBottom: "10px",
+              }}
+            >
+              🎸 Contrate o Ronchini
+            </h2>
+            <p style={{ marginBottom: "30px", opacity: 0.8 }}>
+              Confira a disponibilidade da agenda e fale com a equipe.
+            </p>
 
-          <button
-            className="ticket"
-            onClick={() =>
-              window.open(
-                "https://wa.me/5535991538017?text=Olá!%20Vim%20pelo%20site%20do%20Ronchini%20e%20gostaria%20de%20contratar%20um%20show.%20Podemos%20conversar%3F",
-                "_blank"
-              )
-            }
-          >
-            <span className="ticketGlow" />
-            <span className="pulseDot" />
-            <div className="ticketContent">
-              <span className="ticketLabel">
-                FALAR COM A EQUIPE
-              </span>
-              <span className="ticketTitle">
-                💬 WhatsApp Direto
-              </span>
-              <span className="ticketHint">
-                Resposta rápida • Orçamento sem compromisso
-              </span>
-            </div>
-          </button>
+            <AgendaCalendar />
 
-          <button
-            className="back"
-            onClick={() => goToScene("home")}
-            style={{ marginTop: "30px" }}
-          >
-            Voltar
-          </button>
+            <button
+              className="back"
+              onClick={() => goToScene("home")}
+              style={{ marginTop: "30px" }}
+            >
+              Voltar
+            </button>
+          </div>
         </div>
       )}
 
