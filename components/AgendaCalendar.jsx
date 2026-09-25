@@ -121,23 +121,16 @@ export default function AgendaCalendar() {
   const secaoDadosRef = useRef(null);
   const telaSucessoRef = useRef(null);
 
-  // 🎯 Scroll que respeita a posição do usuário:
-  // - Só rola se a seção NÃO estiver visível na tela
-  // - Não deixa o scroll passar dos depoimentos (não rola pra além)
-  function scrollSuave(ref) {
-    if (!ref.current) return;
-
-    setTimeout(() => {
-      const el = ref.current;
-      const rect = el.getBoundingClientRect();
-      const topOffset = 100; // respiro do topo
-      const jaVisivel = rect.top >= topOffset && rect.top <= window.innerHeight * 0.6;
-
-      if (jaVisivel) return; // já tá visível, não rola
-
-      const scrollY = window.scrollY + rect.top - topOffset;
-      window.scrollTo({ top: scrollY, behavior: "smooth" });
-    }, 200);
+  // ✅ Scroll original — funcionava bem antes dos depoimentos
+  function scrollPara(ref) {
+    if (ref.current) {
+      setTimeout(() => {
+        ref.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 200);
+    }
   }
 
   useEffect(() => {
@@ -171,23 +164,23 @@ export default function AgendaCalendar() {
   }, []);
 
   useEffect(() => {
-    if (dataSelecionada && !enviado) scrollSuave(secaoEventoRef);
+    if (dataSelecionada && !enviado) scrollPara(secaoEventoRef);
   }, [dataSelecionada]);
 
   useEffect(() => {
-    if (tipoEvento && !enviado) scrollSuave(secaoPacoteRef);
+    if (tipoEvento && !enviado) scrollPara(secaoPacoteRef);
   }, [tipoEvento]);
 
   useEffect(() => {
-    if ((pacote || formacao) && !enviado) scrollSuave(secaoHorarioRef);
+    if ((pacote || formacao) && !enviado) scrollPara(secaoHorarioRef);
   }, [pacote, formacao]);
 
   useEffect(() => {
-    if (horario && !enviado) scrollSuave(secaoDadosRef);
+    if (horario && !enviado) scrollPara(secaoDadosRef);
   }, [horario]);
 
   useEffect(() => {
-    if (enviado) scrollSuave(telaSucessoRef);
+    if (enviado) scrollPara(telaSucessoRef);
   }, [enviado]);
 
   function mesAnterior() {
@@ -576,8 +569,8 @@ export default function AgendaCalendar() {
           </p>
         </div>
 
-        {/* 💬 DEPOIMENTOS AQUI — só na tela de sucesso */}
-        <div style={{ marginTop: "50px" }}>
+        {/* 💬 DEPOIMENTOS — só na tela de sucesso */}
+        <div style={{ marginTop: "60px", maxWidth: "700px", margin: "60px auto 0" }}>
           <Depoimentos />
         </div>
       </div>
@@ -956,7 +949,7 @@ export default function AgendaCalendar() {
           />
 
           {/* ETAPA 1 */}
-          <div ref={secaoEventoRef} style={{ marginBottom: "28px", scrollMarginTop: "100px" }}>
+          <div ref={secaoEventoRef} style={{ marginBottom: "28px", scrollMarginTop: "20px" }}>
             <h4 style={estiloTituloEtapa}>1. Que tipo de evento?</h4>
             <div style={estiloGridCards}>
               {TIPOS_EVENTO.map((t) => (
@@ -979,7 +972,7 @@ export default function AgendaCalendar() {
 
           {/* ETAPA 2 — PACOTE */}
           {eventoUsaPacote() && (
-            <div ref={secaoPacoteRef} style={{ marginBottom: "28px", scrollMarginTop: "100px" }}>
+            <div ref={secaoPacoteRef} style={{ marginBottom: "28px", scrollMarginTop: "20px" }}>
               <h4 style={estiloTituloEtapa}>2. Escolha o pacote</h4>
               <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "14px" }}>
                 {PACOTES_ESPECIAIS.map((p) => {
@@ -1056,7 +1049,7 @@ export default function AgendaCalendar() {
 
           {/* ETAPA 2 — FORMAÇÃO */}
           {tipoEvento && !eventoUsaPacote() && (
-            <div ref={secaoPacoteRef} style={{ marginBottom: "28px", scrollMarginTop: "100px" }}>
+            <div ref={secaoPacoteRef} style={{ marginBottom: "28px", scrollMarginTop: "20px" }}>
               <h4 style={estiloTituloEtapa}>2. Escolha a formação</h4>
               <div style={estiloGridCards}>
                 {FORMACOES.map((f) => (
@@ -1076,7 +1069,7 @@ export default function AgendaCalendar() {
 
           {/* ETAPA 3 */}
           {tipoEvento && (eventoUsaPacote() ? pacote : formacao) && (
-            <div ref={secaoHorarioRef} style={{ marginBottom: "28px", scrollMarginTop: "100px" }}>
+            <div ref={secaoHorarioRef} style={{ marginBottom: "28px", scrollMarginTop: "20px" }}>
               <h4 style={estiloTituloEtapa}>3. Escolha o horário</h4>
               <div
                 style={{
@@ -1142,7 +1135,7 @@ export default function AgendaCalendar() {
 
           {/* ETAPA 4 */}
           {horario && (
-            <div ref={secaoDadosRef} style={{ marginBottom: "28px", scrollMarginTop: "100px" }}>
+            <div ref={secaoDadosRef} style={{ marginBottom: "28px", scrollMarginTop: "20px" }}>
               <h4 style={estiloTituloEtapa}>4. Seus dados</h4>
               <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
                 <input
