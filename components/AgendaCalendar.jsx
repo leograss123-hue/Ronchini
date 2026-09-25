@@ -84,7 +84,8 @@ const COR = {
   douradoClaro: "#f5d76e",
   dourado: "#d4af37",
   douradoEscuro: "#8c6b1f",
-  verde: "#22c55e",
+  verdeEsmeralda: "#16a34a",
+  verdeEsmeraldaClaro: "#22c55e",
   cinzaClaro: "rgba(255,255,255,0.05)",
   cinzaMedio: "rgba(255,255,255,0.1)",
   textoDourado: "#f5d76e",
@@ -93,6 +94,7 @@ const COR = {
   bgCardSelecionado: "rgba(245,215,110,0.18)",
   bordaDourada: "rgba(245,215,110,0.35)",
   bordaDouradaForte: "rgba(245,215,110,0.7)",
+  bordaDouradaSutil: "rgba(245,215,110,0.22)",
   bordaSuave: "rgba(255,255,255,0.12)",
 };
 
@@ -337,13 +339,15 @@ export default function AgendaCalendar() {
       {/* ============ CALENDÁRIO ============ */}
       <div
         style={{
-          padding: "24px",
-          background: "rgba(0,0,0,0.45)",
-          borderRadius: "20px",
-          backdropFilter: "blur(14px)",
-          border: `1px solid ${COR.bordaSuave}`,
+          padding: "28px",
+          background:
+            "linear-gradient(145deg, rgba(20,15,5,0.75), rgba(0,0,0,0.65))",
+          borderRadius: "22px",
+          backdropFilter: "blur(16px)",
+          border: `1px solid ${COR.bordaDourada}`,
           marginBottom: "24px",
-          boxShadow: "0 10px 40px rgba(0,0,0,0.3)",
+          boxShadow:
+            "0 15px 50px rgba(0,0,0,0.4), 0 0 60px rgba(245,215,110,0.06), inset 0 1px 0 rgba(245,215,110,0.1)",
         }}
       >
         <div
@@ -351,7 +355,7 @@ export default function AgendaCalendar() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            marginBottom: "22px",
+            marginBottom: "24px",
           }}
         >
           <button
@@ -364,10 +368,12 @@ export default function AgendaCalendar() {
           <h3
             style={{
               margin: 0,
-              fontSize: "20px",
+              fontSize: "21px",
               fontFamily: "var(--font-cinzel), serif",
-              letterSpacing: "1.5px",
+              letterSpacing: "2.5px",
               color: COR.textoDourado,
+              textTransform: "uppercase",
+              textShadow: "0 0 20px rgba(245,215,110,0.3)",
             }}
           >
             {MESES[mesAtual]} {anoAtual}
@@ -380,6 +386,16 @@ export default function AgendaCalendar() {
             →
           </button>
         </div>
+
+        {/* Linha decorativa */}
+        <div
+          style={{
+            height: "1px",
+            background:
+              "linear-gradient(90deg, transparent, rgba(245,215,110,0.4), transparent)",
+            marginBottom: "18px",
+          }}
+        />
 
         <div
           style={{
@@ -395,9 +411,9 @@ export default function AgendaCalendar() {
               style={{
                 textAlign: "center",
                 fontSize: "11px",
-                opacity: 0.55,
+                color: "rgba(245,215,110,0.65)",
                 fontWeight: "600",
-                letterSpacing: "1.5px",
+                letterSpacing: "2px",
                 fontFamily: "var(--font-cinzel), serif",
                 textTransform: "uppercase",
               }}
@@ -435,22 +451,30 @@ export default function AgendaCalendar() {
             let color;
             let opacity = 1;
             let border = "none";
+            let boxShadow = "none";
+            let fontWeight = "600";
 
             if (passado) {
-              background = "rgba(255,255,255,0.03)";
-              color = "rgba(255,255,255,0.25)";
-              opacity = 0.7;
+              background = "rgba(255,255,255,0.02)";
+              color = "rgba(255,255,255,0.2)";
+              opacity = 0.6;
+              border = "1px solid rgba(255,255,255,0.04)";
             } else if (!temLivre) {
-              background = "rgba(255,255,255,0.05)";
+              background = "rgba(255,255,255,0.04)";
               color = "rgba(255,255,255,0.25)";
               opacity = 0.5;
+              border = "1px solid rgba(255,255,255,0.05)";
             } else if (isSelecionado) {
               background = `linear-gradient(135deg, ${COR.douradoClaro}, ${COR.dourado})`;
               color = "#111";
               border = "2px solid #fff";
+              boxShadow = "0 0 25px rgba(245,215,110,0.6), 0 0 50px rgba(245,215,110,0.3)";
+              fontWeight = "800";
             } else {
-              background = COR.verde;
-              color = "#000";
+              // Opção C: verde esmeralda escuro + borda dourada sutil
+              background = `linear-gradient(135deg, ${COR.verdeEsmeralda}, #15803d)`;
+              color = "#fff";
+              border = `1px solid ${COR.bordaDouradaSutil}`;
             }
 
             return (
@@ -465,10 +489,11 @@ export default function AgendaCalendar() {
                   justifyContent: "center",
                   borderRadius: "10px",
                   fontSize: "14px",
-                  fontWeight: "600",
+                  fontWeight,
                   background,
                   color,
                   border,
+                  boxShadow,
                   cursor: clicavel ? "pointer" : "not-allowed",
                   transition: "all 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
                   opacity,
@@ -485,7 +510,7 @@ export default function AgendaCalendar() {
                       right: "-2px",
                       fontSize: "10px",
                       fontWeight: "900",
-                      background: COR.verde,
+                      background: COR.verdeEsmeraldaClaro,
                       color: "#fff",
                       borderRadius: "50%",
                       width: "14px",
@@ -512,7 +537,7 @@ export default function AgendaCalendar() {
                       height: "8px",
                       borderRadius: "50%",
                       background: COR.douradoClaro,
-                      boxShadow: `0 0 4px ${COR.douradoClaro}`,
+                      boxShadow: `0 0 6px ${COR.douradoClaro}`,
                     }}
                   />
                 )}
@@ -526,33 +551,103 @@ export default function AgendaCalendar() {
             display: "flex",
             justifyContent: "center",
             gap: "14px",
-            marginTop: "22px",
+            marginTop: "24px",
             fontSize: "11px",
             flexWrap: "wrap",
             letterSpacing: "0.5px",
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            <span style={{ width: "14px", height: "14px", borderRadius: "4px", background: COR.verde, display: "inline-block" }} />
+            <span
+              style={{
+                width: "14px",
+                height: "14px",
+                borderRadius: "4px",
+                background: `linear-gradient(135deg, ${COR.verdeEsmeralda}, #15803d)`,
+                border: `1px solid ${COR.bordaDouradaSutil}`,
+                display: "inline-block",
+              }}
+            />
             Livre
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            <span style={{ position: "relative", width: "14px", height: "14px", borderRadius: "4px", background: COR.verde, display: "inline-block" }}>
-              <span style={{ position: "absolute", top: "1px", right: "1px", width: "5px", height: "5px", borderRadius: "50%", background: COR.douradoClaro }} />
+            <span
+              style={{
+                position: "relative",
+                width: "14px",
+                height: "14px",
+                borderRadius: "4px",
+                background: `linear-gradient(135deg, ${COR.verdeEsmeralda}, #15803d)`,
+                border: `1px solid ${COR.bordaDouradaSutil}`,
+                display: "inline-block",
+              }}
+            >
+              <span
+                style={{
+                  position: "absolute",
+                  top: "1px",
+                  right: "1px",
+                  width: "5px",
+                  height: "5px",
+                  borderRadius: "50%",
+                  background: COR.douradoClaro,
+                }}
+              />
             </span>
             Já tem evento
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            <span style={{ width: "14px", height: "14px", borderRadius: "4px", background: "rgba(255,255,255,0.1)", display: "inline-block" }} />
+            <span
+              style={{
+                width: "14px",
+                height: "14px",
+                borderRadius: "4px",
+                background: "rgba(255,255,255,0.06)",
+                display: "inline-block",
+              }}
+            />
             Sem vaga
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            <span style={{ width: "14px", height: "14px", borderRadius: "4px", background: `linear-gradient(135deg, ${COR.douradoClaro}, ${COR.dourado})`, display: "inline-block" }} />
+            <span
+              style={{
+                width: "14px",
+                height: "14px",
+                borderRadius: "4px",
+                background: `linear-gradient(135deg, ${COR.douradoClaro}, ${COR.dourado})`,
+                display: "inline-block",
+              }}
+            />
             Selecionado
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            <span style={{ position: "relative", width: "14px", height: "14px", borderRadius: "4px", background: "rgba(255,255,255,0.03)", display: "inline-block" }}>
-              <span style={{ position: "absolute", top: "-3px", right: "-3px", fontSize: "9px", fontWeight: "900", background: COR.verde, color: "#fff", borderRadius: "50%", width: "11px", height: "11px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <span
+              style={{
+                position: "relative",
+                width: "14px",
+                height: "14px",
+                borderRadius: "4px",
+                background: "rgba(255,255,255,0.03)",
+                display: "inline-block",
+              }}
+            >
+              <span
+                style={{
+                  position: "absolute",
+                  top: "-3px",
+                  right: "-3px",
+                  fontSize: "9px",
+                  fontWeight: "900",
+                  background: COR.verdeEsmeraldaClaro,
+                  color: "#fff",
+                  borderRadius: "50%",
+                  width: "11px",
+                  height: "11px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
                 ✓
               </span>
             </span>
@@ -565,9 +660,10 @@ export default function AgendaCalendar() {
             textAlign: "center",
             fontSize: "11px",
             opacity: 0.55,
-            marginTop: "18px",
+            marginTop: "20px",
             fontStyle: "italic",
             letterSpacing: "0.5px",
+            color: "rgba(245,215,110,0.6)",
           }}
         >
           Toque em uma data para ver as opções de contratação
@@ -580,10 +676,11 @@ export default function AgendaCalendar() {
           style={{
             padding: "28px",
             background: "rgba(0,0,0,0.5)",
-            borderRadius: "20px",
-            backdropFilter: "blur(14px)",
+            borderRadius: "22px",
+            backdropFilter: "blur(16px)",
             border: `1px solid ${COR.bordaDourada}`,
-            boxShadow: "0 15px 50px rgba(0,0,0,0.35)",
+            boxShadow:
+              "0 15px 50px rgba(0,0,0,0.4), 0 0 60px rgba(245,215,110,0.05)",
           }}
         >
           <h3
@@ -593,11 +690,22 @@ export default function AgendaCalendar() {
               color: COR.textoDourado,
               fontSize: "18px",
               fontFamily: "var(--font-cinzel), serif",
-              letterSpacing: "2px",
+              letterSpacing: "3px",
+              textTransform: "uppercase",
+              textShadow: "0 0 20px rgba(245,215,110,0.3)",
             }}
           >
             {formatarDataBR(dataSelecionada)}
           </h3>
+
+          <div
+            style={{
+              height: "1px",
+              background:
+                "linear-gradient(90deg, transparent, rgba(245,215,110,0.4), transparent)",
+              marginBottom: "24px",
+            }}
+          />
 
           {/* ETAPA 1: TIPO DE EVENTO */}
           <div ref={secaoEventoRef} style={{ marginBottom: "28px", scrollMarginTop: "20px" }}>
@@ -636,11 +744,15 @@ export default function AgendaCalendar() {
                         padding: "20px",
                         borderRadius: "16px",
                         background: sel ? COR.bgCardSelecionado : COR.bgCard,
-                        border: sel ? `2px solid ${COR.douradoClaro}` : `1px solid ${COR.bordaSuave}`,
+                        border: sel
+                          ? `2px solid ${COR.douradoClaro}`
+                          : `1px solid ${COR.bordaSuave}`,
                         cursor: "pointer",
                         transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
                         textAlign: "left",
-                        boxShadow: sel ? `0 0 30px rgba(245,215,110,0.2)` : "none",
+                        boxShadow: sel
+                          ? `0 0 30px rgba(245,215,110,0.2)`
+                          : "none",
                       }}
                     >
                       <div
@@ -745,21 +857,23 @@ export default function AgendaCalendar() {
                           ? "rgba(255,255,255,0.04)"
                           : sel
                           ? `linear-gradient(135deg, ${COR.douradoClaro}, ${COR.dourado})`
-                          : COR.bgCard,
+                          : `linear-gradient(135deg, ${COR.verdeEsmeralda}, #15803d)`,
                         color: bloqueado
                           ? "rgba(255,255,255,0.25)"
                           : sel
                           ? "#111"
-                          : COR.douradoClaro,
+                          : "#fff",
                         border: bloqueado
                           ? `1px solid rgba(255,255,255,0.06)`
                           : sel
                           ? "2px solid #fff"
-                          : `1px solid ${COR.bordaDourada}`,
+                          : `1px solid ${COR.bordaDouradaSutil}`,
                         cursor: bloqueado ? "not-allowed" : "pointer",
                         transition: "all 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
                         opacity: bloqueado ? 0.5 : 1,
-                        boxShadow: sel ? `0 0 25px rgba(245,215,110,0.35)` : "none",
+                        boxShadow: sel
+                          ? `0 0 25px rgba(245,215,110,0.35)`
+                          : "none",
                       }}
                     >
                       {h}
@@ -822,7 +936,7 @@ export default function AgendaCalendar() {
                 padding: "18px",
                 fontSize: "15px",
                 fontWeight: "700",
-                letterSpacing: "1.5px",
+                letterSpacing: "2px",
                 borderRadius: "14px",
                 border: "none",
                 cursor: podeEnviar ? "pointer" : "not-allowed",
@@ -850,8 +964,8 @@ export default function AgendaCalendar() {
 // ============ ESTILOS REUTILIZÁVEIS ============
 
 const estiloNavCalendario = {
-  background: "transparent",
-  border: `1px solid rgba(245,215,110,0.3)`,
+  background: "rgba(245,215,110,0.05)",
+  border: `1px solid ${COR.bordaDourada}`,
   color: "#f5d76e",
   padding: "8px 18px",
   borderRadius: "10px",
