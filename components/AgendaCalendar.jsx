@@ -239,8 +239,13 @@ export default function AgendaCalendar() {
     return HORARIOS.some((h) => !horarioBloqueado(dataStr, h));
   }
 
+  // ✅ CORRIGIDO: mostra o pontinho só se o PRÓPRIO dia tem show começando
+  // (ignora a madrugada do dia seguinte que foi bloqueada pelos 4h)
   function diaTemEvento(dataStr) {
-    return HORARIOS.some((h) => horarioBloqueado(dataStr, h));
+    return HORARIOS.some((h) => {
+      const chave = `${dataStr}_${h}`;
+      return agenda[chave];
+    });
   }
 
   function gerarDias() {
@@ -381,7 +386,7 @@ export default function AgendaCalendar() {
   }
 
   // ============================================
-  // 🎉 TELA DE SUCESSO (com depoimentos no final)
+  // 🎉 TELA DE SUCESSO
   // ============================================
   if (enviado && dadosEnviados) {
     const tipo = TIPOS_EVENTO.find((t) => t.id === dadosEnviados.tipoEvento);
