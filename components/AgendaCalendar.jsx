@@ -121,7 +121,6 @@ export default function AgendaCalendar() {
   const secaoDadosRef = useRef(null);
   const telaSucessoRef = useRef(null);
 
-  // ✅ Scroll original — funcionava bem antes dos depoimentos
   function scrollPara(ref) {
     if (ref.current) {
       setTimeout(() => {
@@ -570,8 +569,8 @@ export default function AgendaCalendar() {
         </div>
 
         {/* 💬 DEPOIMENTOS — só na tela de sucesso */}
-        <div style={{ marginTop: "60px", maxWidth: "700px", margin: "60px auto 0" }}>
-          <Depoimentos />
+        <div style={{ marginTop: "60px" }}>
+          <Depoimentos layout="coluna" />
         </div>
       </div>
     );
